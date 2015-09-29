@@ -6,23 +6,34 @@ import android.os.Bundle;
 import android.provider.SyncStateContract;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import com.android.osloh.nodata.R;
+import com.android.osloh.nodata.ui.fragment.ConversationFragment;
+import com.android.osloh.nodata.ui.fragment.GalleryConversationFragment;
+import com.android.osloh.nodata.ui.fragment.MainFragment;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class MainActivity extends Activity {
+
+    public static final String LANDING_MAIN_TAG = "com.android.osloh.nodata.ui.activity.main.tag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        Bundle extras = new Bundle();
-        /*
-        ZoomdleFragment productGalleryFragmentV3 = ProductGalleryFragmentV3.newInstance(extras);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container_for_activity_search, productGalleryFragmentV3, LANDING_SEARCH_TAG);
-        fragmentTransaction.commit();
         //*/
+    }
+
+    public void loadFragment() {
+        MainFragment productGalleryFragmentV3 = GalleryConversationFragment.newInstance(new Bundle());
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container_for_main_activity, productGalleryFragmentV3, LANDING_MAIN_TAG);
+        fragmentTransaction.commit();
     }
 
     @Override
