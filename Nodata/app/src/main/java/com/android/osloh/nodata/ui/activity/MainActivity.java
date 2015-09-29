@@ -1,9 +1,13 @@
-package com.android.osloh.nodata;
+package com.android.osloh.nodata.ui.activity;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.android.osloh.nodata.R;
 
 public class MainActivity extends Activity {
 
@@ -11,6 +15,14 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Bundle extras = new Bundle();
+        /*
+        ZoomdleFragment productGalleryFragmentV3 = ProductGalleryFragmentV3.newInstance(extras);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container_for_activity_search, productGalleryFragmentV3, LANDING_SEARCH_TAG);
+        fragmentTransaction.commit();
+        //*/
     }
 
     @Override
