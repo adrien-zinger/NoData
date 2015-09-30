@@ -3,6 +3,9 @@ package com.android.osloh.nodata.ui.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 
+import com.android.osloh.nodata.ui.activity.MainActivity;
+import com.android.osloh.nodata.ui.constant.FragmentConstants;
+
 /**
  */
 public class MainFragment extends Fragment {
@@ -15,4 +18,13 @@ public class MainFragment extends Fragment {
         }
     }
 
+    public void loadFragment(FragmentConstants.Goto fragment) {
+        ((MainActivity) getActivity())
+                .loadFragment(fragment, new Bundle());
+    }
+
+    public void loadFragment(FragmentConstants.Goto fragment, Bundle bundle) {
+        ((MainActivity) getActivity())
+                .loadFragment(fragment, bundle);
+    }
 }

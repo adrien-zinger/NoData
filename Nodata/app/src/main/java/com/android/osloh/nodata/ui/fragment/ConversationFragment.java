@@ -1,17 +1,13 @@
 package com.android.osloh.nodata.ui.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
-import com.android.osloh.nodata.ui.activity.MainActivity;
-import com.android.osloh.nodata.ui.constant.FragmentConstants;
+import com.android.osloh.nodata.ui.Utils.SmsBunny;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -43,9 +39,6 @@ public class ConversationFragment extends MainFragment {
 
     @OnClick(R.id.text)
     public void onClickText() {
-        Activity activity = getActivity();
-        if (activity instanceof MainActivity)
-            ((MainActivity) getActivity())
-                    .loadFragment(FragmentConstants.Goto.GALLERY, new Bundle());
+        SmsBunny.getBunny().sendSmsForGroup(getActivity());
     }
 }
