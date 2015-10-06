@@ -23,19 +23,21 @@ public class SmsBunny {
         return mBunny;
     }
 
-    public boolean sendSmsForGroup(Context context) {
-        return sendSms(context);
+    public boolean sendSmsForGroup(Context context, String number, String content) {
+        return sendSms(context, number, content);
     }
 
-    private boolean sendSms(Context context) {
+    private boolean sendSms(Context context, String number, String content) {
         try {
             SmsManager smsManager = SmsManager.getDefault();
             //smsManager.sendTextMessage("0659085314", null, "sms message", null, null);
-            smsManager.sendTextMessage("0638800279", null, "sms message", null, null);
-            Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+            smsManager.sendTextMessage(number, null, content, null, null);
+            /*Intent sendIntent = new Intent(Intent.ACTION_VIEW);
             sendIntent.putExtra("sms_body", "default content");
+            sendIntent.putExtra("address", number);
             sendIntent.setType("vnd.android-dir/mms-sms");
             context.startActivity(sendIntent);
+            */
             if (context instanceof MainActivity) {
                 ((MainActivity) context).showSnackbar(context.getResources().getString(R.string.message_send));
             }

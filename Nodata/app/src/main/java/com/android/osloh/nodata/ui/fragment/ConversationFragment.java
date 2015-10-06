@@ -1,16 +1,17 @@
 package com.android.osloh.nodata.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.Utils.SmsBunny;
-
+import com.android.osloh.nodata.ui.activity.MainActivity;
+import com.android.osloh.nodata.ui.constant.FragmentConstants;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -19,23 +20,47 @@ import butterknife.OnClick;
  * Fragment for the conversation
  */
 public class ConversationFragment extends MainFragment {
-    private ListView lvHomePage;
-    private String[] items;
-    private View view;
-
+    private String from, content, answer;
+    private View main_view;
     public static ConversationFragment newInstance(@SuppressWarnings("unused") Bundle bundle) {
-        return new ConversationFragment();
+        ConversationFragment cf = new ConversationFragment();
+        cf.setArguments(bundle);
+        return cf;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.test2, container, false); // todo
-        ButterKnife.bind(this, view);
+
+        View view = inflater.inflate(R.layout.fragment_conversation, container, false); // todo
+        from = getArguments().getString("from");
+        content = getArguments().getString("content");
+        TextView From = (TextView) view.findViewById(R.id.from_name);
+        TextView Content = (TextView) view.findViewById(R.id.content_sms);
+        main_view = view;
+        From.setText(from);
+        Content.setText(content);
+        Button send = (Button) view.findViewById(R.id.send_button);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SmsBunny.getBunny().sendSmsForGroup(getActivity(), from, getMessage());
+            }
+        });
+        Button cancel = (Button) view.findViewById(R.id.cancel_button);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).loadFragment(FragmentConstants.Goto.INBOX, new Bundle());
+            }
+        });
+        //ButterKnife.bind(this, view);
         return view;
     }
-
-
+    public String getMessage() {
+        EditText ans = (EditText) main_view.findViewById(R.id.send_content);
+        return ans.getText().toString();
+    }
     /**********************************************************************************/
     /**********************************************************************************/
     /* ON CLICK
@@ -44,6 +69,6 @@ public class ConversationFragment extends MainFragment {
 
     @OnClick(R.id.text)
     public void onClickText() {
-        SmsBunny.getBunny().sendSmsForGroup(getActivity());
+        //SmsBunny.getBunny().sendSmsForGroup(getActivity());
     }
 }

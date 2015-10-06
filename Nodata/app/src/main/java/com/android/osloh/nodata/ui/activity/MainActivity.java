@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        loadFragment(FragmentConstants.Goto.CONVERSATION, new Bundle());
+        //loadFragment(FragmentConstants.Goto.CONVERSATION, new Bundle());
+        loadFragment(FragmentConstants.Goto.INBOX, new Bundle());//testing
     }
 
     public void loadFragment(FragmentConstants.Goto fragment, Bundle bundle) {
