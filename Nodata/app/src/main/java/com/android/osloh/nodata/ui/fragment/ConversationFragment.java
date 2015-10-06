@@ -1,9 +1,12 @@
 package com.android.osloh.nodata.ui.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.Utils.SmsBunny;
@@ -16,6 +19,9 @@ import butterknife.OnClick;
  * Fragment for the conversation
  */
 public class ConversationFragment extends MainFragment {
+    private ListView lvHomePage;
+    private String[] items;
+    private View view;
 
     public static ConversationFragment newInstance(@SuppressWarnings("unused") Bundle bundle) {
         return new ConversationFragment();
@@ -28,7 +34,6 @@ public class ConversationFragment extends MainFragment {
         ButterKnife.bind(this, view);
         return view;
     }
-
 
 
     /**********************************************************************************/
