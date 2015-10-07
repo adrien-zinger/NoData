@@ -1,8 +1,11 @@
 package com.android.osloh.nodata.ui.fragment;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -37,10 +40,19 @@ public class ConversationFragment extends MainFragment {
         content = getArguments().getString("content");
         TextView From = (TextView) view.findViewById(R.id.from_name);
         TextView Content = (TextView) view.findViewById(R.id.content_sms);
+        EditText ans = (EditText) view.findViewById(R.id.send_content);
+        Button send = (Button) view.findViewById(R.id.send_button);
         main_view = view;
         From.setText(from);
         Content.setText(content);
-        Button send = (Button) view.findViewById(R.id.send_button);
+        ans.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                ((EditText)view).setText("");
+                return false;
+            }
+        });
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
