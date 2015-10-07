@@ -2,7 +2,6 @@ package com.android.osloh.nodata.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
-import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,16 +15,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import com.android.osloh.nodata.R;
-import com.android.osloh.nodata.ui.Utils.SmsBunny;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
-
 import butterknife.ButterKnife;
 
 public class DisplayFragment extends MainFragment {
 
     private Button btnSent, btnInbox, btnDraft;
-    private String from, content;
+    //private String from, content;
 
     public static DisplayFragment newInstance(@SuppressWarnings("unused") Bundle bundle) {
         return new DisplayFragment();
@@ -113,7 +110,6 @@ public class DisplayFragment extends MainFragment {
                 bundle.putString("from", buff[0].toString());
                 bundle.putString("content", msg);
                 ((MainActivity) getActivity()).loadFragment(FragmentConstants.Goto.CONVERSATION, bundle);
-                //SmsBunny.getBunny().sendSmsForGroup(getActivity(),buff[0].toString());
             }
         });
     }

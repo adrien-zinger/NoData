@@ -4,17 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout android:id="@+id/linearLayout1"
-        android:layout_width="match_parent" android:layout_weight="0"
-        android:layout_height="wrap_content">
-        <Button android:text="Inbox" android:id="@+id/btnInbox"
-            android:layout_height="wrap_content" android:layout_weight="0.5"
-            android:layout_width="match_parent"></Button>
-        <Button android:text="Sent Box" android:id="@+id/btnSentBox"
-            android:layout_height="wrap_content" android:layout_weight="0.5"
-            android:layout_width="match_parent"></Button>
-        <Button android:layout_weight="0.5" android:layout_height="wrap_content"
-            android:id="@+id/btnDraft" android:text="Draft" android:layout_width="match_parent"></Button>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0">
+        <Button
+            android:text="Inbox"
+            android:id="@+id/btnInbox"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_width="match_parent"/>
+        <Button
+            android:text="Sent Box"
+            android:id="@+id/btnSentBox"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_width="match_
+            parent"/>
+        <Button
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnDraft"
+            android:text="Draft"
+            android:layout_width="match_parent"/>
     </LinearLayout>
-    <ListView android:id="@+id/listofSMS" android:layout_width="match_parent"
+    <ListView
+        android:id="@+id/listofSMS"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>
