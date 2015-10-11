@@ -3,7 +3,6 @@ package com.android.osloh.nodata.ui.constant;
 import android.os.Bundle;
 
 import com.android.osloh.nodata.ui.fragment.ConversationFragment;
-import com.android.osloh.nodata.ui.fragment.DisplayFragment;
 import com.android.osloh.nodata.ui.fragment.GalleryFragment;
 import com.android.osloh.nodata.ui.fragment.MainFragment;
 
@@ -14,12 +13,6 @@ import com.android.osloh.nodata.ui.fragment.MainFragment;
 public class FragmentConstants {
 
     public enum Goto {
-        GALLERY {
-            @Override
-            public MainFragment getInstance(Bundle bundle) {
-                return GalleryFragment.newInstance(bundle);
-            }
-        },
         CONVERSATION {
             @Override
             public MainFragment getInstance(Bundle bundle) {
@@ -29,7 +22,7 @@ public class FragmentConstants {
         INBOX {
             @Override
             public MainFragment getInstance(Bundle bundle) {
-                return DisplayFragment.newInstance(bundle);
+                return GalleryFragment.newInstance(bundle);
             }
         };
         public abstract MainFragment getInstance(Bundle bundle);
