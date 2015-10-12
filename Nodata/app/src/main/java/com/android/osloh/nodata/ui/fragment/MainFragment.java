@@ -16,8 +16,8 @@ public class MainFragment extends Fragment {
         if (getArguments() != null) {
             // do the thing
         }
-        ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle(getTitle());
+//        ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        ((MainActivity) getActivity()).getSupportActionBar().setTitle(getTitle());
     }
 
     public void loadFragment(FragmentConstants.Goto fragment) {

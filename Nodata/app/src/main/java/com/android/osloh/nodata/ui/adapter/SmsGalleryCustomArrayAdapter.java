@@ -39,7 +39,7 @@ public class SmsGalleryCustomArrayAdapter extends ArrayAdapter<Item> {
         return convertView;
     }
 
-    private class Holder {
+    public class Holder {
         @Bind(R.id.toptext) TextView tt;
         @Bind(R.id.toptextdata) TextView ttd;
         @Bind(R.id.middletext) TextView mt;

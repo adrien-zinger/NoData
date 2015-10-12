@@ -45,15 +45,17 @@ public class GalleryFragment extends MainFragment {
         return (container == null) ? null : view;
     }
 
-
     private void displayListeView(String type) {
         SmsGalleryCustomArrayAdapter dataAdapter = null;
         if (type == "inbox")
-            dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(), R.layout.list_item, ((MainActivity) getActivity()).displayBox("inbox"));
+            dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(),
+                    R.layout.list_item, ((MainActivity) getActivity()).displayBox("inbox", false));
         else if(type=="sent")
-            dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(), R.layout.list_item, ((MainActivity) getActivity()).displayBox("sent"));
+            dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(),
+                    R.layout.list_item, ((MainActivity) getActivity()).displayBox("sent", false));
         else if(type == "draft")
-            dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(), R.layout.list_item, ((MainActivity) getActivity()).displayBox("draft"));
+            dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(),
+                    R.layout.list_item, ((MainActivity) getActivity()).displayBox("draft", false));
 
         mListOfSMS.setAdapter(dataAdapter);
         mListOfSMS.setTextFilterEnabled(true);

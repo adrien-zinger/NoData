@@ -48,35 +48,34 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.fragment_container_for_main_activity, productGalleryFragmentV3, "com.android.osloh.nodata.ui.activity.main.tag");
         fragmentTransaction.commit();
     }
-    public ArrayList<Item> displayBox(String box) {
+    public ArrayList<Item> displayBox(String box, boolean isConvers) {
         ArrayList<Item> m_parts = new ArrayList<Item>();
         String[] reqCols = new String[]{"read", "date","address", "body"};
         Cursor cursor = getContentResolver().query(Uri.parse("content://sms/" + box), reqCols, null, null, null);
-        assert cursor != null;
         if (cursor.moveToFirst()) { // must check the result to prevent exception
             do {
                 Item msgData = new Item();
+                boolean exist = false;
                 for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
-                    if (cursor.getColumnName(idx).endsWith("date"))
-                    {
-                        long date = Long.parseLong(cursor.getString(idx));
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd/HH/mm", Locale.FRANCE);
-                        String dateString = formatter.format(new Date(date));
-                        //msgData += " " + cursor.getColumnName(idx) + ":" + dateString;
-                        msgData.setDate(dateString);
-                    }
                     if (cursor.getColumnName(idx).endsWith("address"))
                     {
-                        msgData.setAdress(cursor.getString(idx));
+                        if(!isConvers)
+                            exist = isAuthorExit(cursor.getString(idx), m_parts);
+                        if(!exist)
+                            msgData.setAdress(cursor.getString(idx));
                     }
-                    if (cursor.getColumnName(idx).endsWith("body"))
+                    if (cursor.getColumnName(idx).endsWith("date") && !exist)
                     {
-                        msgData.setContent(cursor.getString(idx));
+                        if (!isConvers)
+                            msgData.setDate(convertDate(cursor.getString(idx)));
+                        else
+                            msgData.setDate(cursor.getString(idx));
                     }
-                    //else
-                    //msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
+                    if (cursor.getColumnName(idx).endsWith("body") && !exist)
+                        msgData.setContent(cursor.getString(idx));
                 }
-                m_parts.add(msgData);
+                if(msgData.getAddress() != null)
+                    m_parts.add(msgData);
             } while (cursor.moveToNext());
         }
         return m_parts;
@@ -107,4 +106,19 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
         // todo on fait ça ou pas pour annuler ? .setAction(R.string.snackbar_action_undo, clickListener)
     }
+    public boolean isAuthorExit(String add, ArrayList<Item> in){
+        if (!in.isEmpty()&& add != null)
+            for (Item it:in)
+                if(it.getAddress() != null)
+                    if(it.getAddress().endsWith(add))
+                        return true;
+        return false;
+    }
+    public String convertDate(String in){
+        long date = Long.parseLong(in);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd/HH/mm", Locale.FRANCE);
+        String dateString = formatter.format(new Date(date));
+        return dateString;
+    }
 }
+

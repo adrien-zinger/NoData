@@ -1,19 +1,13 @@
 package com.android.osloh.nodata.ui.adapter;
 
-/**
- * Created by Charles on 11/10/2015.
- */
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.Utils.Item;
-
 import java.util.ArrayList;
 
 /**
