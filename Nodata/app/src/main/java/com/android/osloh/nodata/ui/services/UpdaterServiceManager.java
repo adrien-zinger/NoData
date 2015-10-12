@@ -1,14 +1,9 @@
 package com.android.osloh.nodata.ui.services;
 
-import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
@@ -16,6 +11,8 @@ import android.view.View;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
+
+import java.util.Calendar;
 
 /**
  * Created by Charles on 10/10/2015.

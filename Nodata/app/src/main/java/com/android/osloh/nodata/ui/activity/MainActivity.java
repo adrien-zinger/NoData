@@ -1,22 +1,24 @@
 package com.android.osloh.nodata.ui.activity;
 
 import android.app.FragmentTransaction;
-import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
+import com.android.osloh.nodata.ui.Utils.Item;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
 import com.android.osloh.nodata.ui.fragment.MainFragment;
-import com.android.osloh.nodata.ui.services.UpdaterServiceManager;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,6 +47,39 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container_for_main_activity, productGalleryFragmentV3, "com.android.osloh.nodata.ui.activity.main.tag");
         fragmentTransaction.commit();
+    }
+    public ArrayList<Item> displayBox(String box) {
+        ArrayList<Item> m_parts = new ArrayList<Item>();
+        String[] reqCols = new String[]{"read", "date","address", "body"};
+        Cursor cursor = getContentResolver().query(Uri.parse("content://sms/" + box), reqCols, null, null, null);
+        assert cursor != null;
+        if (cursor.moveToFirst()) { // must check the result to prevent exception
+            do {
+                Item msgData = new Item();
+                for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
+                    if (cursor.getColumnName(idx).endsWith("date"))
+                    {
+                        long date = Long.parseLong(cursor.getString(idx));
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd/HH/mm", Locale.FRANCE);
+                        String dateString = formatter.format(new Date(date));
+                        //msgData += " " + cursor.getColumnName(idx) + ":" + dateString;
+                        msgData.setDate(dateString);
+                    }
+                    if (cursor.getColumnName(idx).endsWith("address"))
+                    {
+                        msgData.setAdress(cursor.getString(idx));
+                    }
+                    if (cursor.getColumnName(idx).endsWith("body"))
+                    {
+                        msgData.setContent(cursor.getString(idx));
+                    }
+                    //else
+                    //msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
+                }
+                m_parts.add(msgData);
+            } while (cursor.moveToNext());
+        }
+        return m_parts;
     }
     @Override
     public void onBackPressed() {

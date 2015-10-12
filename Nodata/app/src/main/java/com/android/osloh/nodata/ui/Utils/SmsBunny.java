@@ -1,9 +1,6 @@
 package com.android.osloh.nodata.ui.Utils;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.telephony.SmsManager;
 
 import com.android.osloh.nodata.R;

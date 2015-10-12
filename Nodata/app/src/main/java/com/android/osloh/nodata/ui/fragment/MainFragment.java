@@ -16,6 +16,8 @@ public class MainFragment extends Fragment {
         if (getArguments() != null) {
             // do the thing
         }
+        ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle(getTitle());
     }
 
     public void loadFragment(FragmentConstants.Goto fragment) {
@@ -26,5 +28,9 @@ public class MainFragment extends Fragment {
     public void loadFragment(FragmentConstants.Goto fragment, Bundle bundle) {
         ((MainActivity) getActivity())
                 .loadFragment(fragment, bundle);
+    }
+
+    protected String getTitle() {
+        return "Nodata";
     }
 }
