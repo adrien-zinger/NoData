@@ -1,9 +1,15 @@
-package com.android.osloh.nodata.ui.Utils;
+package com.android.osloh.nodata.ui.nodataUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Charles on 10/10/2015.
  */
 public class Item {
+    private final SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy-MM-dd/HH/mm", Locale.FRANCE);
+
     private String date;
     private String address;
     private String content;
@@ -13,13 +19,14 @@ public class Item {
     }
 
     public Item(String i, String d, String p){
-        this.date = d;
         this.address = i;
+        this.date = d;
         this.content = p;
     }
 
-    public String getDate() {
-        return date;
+    public Date getDate() {
+        long date = Long.parseLong(this.date);
+        return new Date(date);
     }
 
     public void setDate(String details) {
@@ -31,7 +38,7 @@ public class Item {
     }
 
     public void setAdress(String name) {
-        this.address = name;
+        this.address = name.replace("+33", "0");;
     }
 
     public String getContent() {

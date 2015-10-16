@@ -8,9 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
-import com.android.osloh.nodata.ui.Utils.Item;
+import com.android.osloh.nodata.ui.nodataUtils.Item;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -19,9 +19,9 @@ import butterknife.ButterKnife;
  * Created by Charles on 10/10/2015.
  */
 public class SmsGalleryCustomArrayAdapter extends ArrayAdapter<Item> {
-    private ArrayList<Item> mSmsList;
+    private List<Item> mSmsList;
 
-    public SmsGalleryCustomArrayAdapter(Context context, int textViewResourceId, ArrayList<Item> objects) {
+    public SmsGalleryCustomArrayAdapter(Context context, int textViewResourceId, List<Item> objects) {
         super(context, textViewResourceId, objects);
         this.mSmsList = objects;
     }
@@ -34,7 +34,7 @@ public class SmsGalleryCustomArrayAdapter extends ArrayAdapter<Item> {
         Holder holder = (Holder) convertView.getTag();
         Item i = mSmsList.get(position);
         if (i != null) {
-            holder.initHolder(i.getDate(), i.getAddress(), i.getContent());
+            holder.initHolder(i.getDate().toString(), i.getAddress(), i.getContent());
         }
         return convertView;
     }

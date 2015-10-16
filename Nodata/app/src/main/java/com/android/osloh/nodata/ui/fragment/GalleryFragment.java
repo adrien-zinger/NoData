@@ -21,13 +21,6 @@ import butterknife.OnItemClick;
 
 public class GalleryFragment extends MainFragment {
 
-    @Bind(R.id.btnSentBox)
-    public Button btnSent;
-    @Bind(R.id.btnInbox)
-    public Button btnInbox;
-    @Bind(R.id.btnDraft)
-    public Button btnDraft;
-
     @Bind(R.id.listofSMS)
     public ListView mListOfSMS;
     //private String from, content;
@@ -49,14 +42,7 @@ public class GalleryFragment extends MainFragment {
         SmsGalleryCustomArrayAdapter dataAdapter = null;
         if (type == "inbox")
             dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(),
-                    R.layout.list_item, ((MainActivity) getActivity()).displayBox("inbox", false));
-        else if(type=="sent")
-            dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(),
-                    R.layout.list_item, ((MainActivity) getActivity()).displayBox("sent", false));
-        else if(type == "draft")
-            dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(),
-                    R.layout.list_item, ((MainActivity) getActivity()).displayBox("draft", false));
-
+                    R.layout.list_item, ((MainActivity) getActivity()).getGalleryContent("inbox"));
         mListOfSMS.setAdapter(dataAdapter);
         mListOfSMS.setTextFilterEnabled(true);
     }

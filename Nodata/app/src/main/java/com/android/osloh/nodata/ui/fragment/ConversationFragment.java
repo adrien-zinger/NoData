@@ -7,17 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
-import com.android.osloh.nodata.ui.Utils.Item;
-import com.android.osloh.nodata.ui.Utils.SmsBunny;
+import com.android.osloh.nodata.ui.nodataUtils.Filter;
+import com.android.osloh.nodata.ui.nodataUtils.Item;
+import com.android.osloh.nodata.ui.nodataUtils.SmsBunny;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.ConversArrayAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
+import java.util.Stack;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -36,7 +36,8 @@ public class ConversationFragment extends MainFragment {
     public ListView mListOfConvers;
 
     private String from;
-
+    private Stack<Item> received = new Stack<>();
+    private Stack<Item> sended = new Stack<>();
 
     public static ConversationFragment newInstance(@SuppressWarnings("unused") Bundle bundle) {
         ConversationFragment cf = new ConversationFragment();
@@ -50,9 +51,42 @@ public class ConversationFragment extends MainFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.convers_fragment, container, false);
         ButterKnife.bind(this, view);
-        displayListContent(filterConvers(((MainActivity) getActivity()).displayBox("inbox", true),
-                ((MainActivity) getActivity()).displayBox("sent", true)));
+
+        Filter.Predicate<Item> validPersonPredicate = new Filter.Predicate<Item>() {
+            public boolean apply(Item item) {
+                return item.getAddress().endsWith(from);
+            }
+        };
+        received.addAll(Filter.filter(((MainActivity) getActivity()).getConversContent("inbox"), validPersonPredicate));
+        sended.addAll(Filter.filter(((MainActivity) getActivity()).getConversContent("sent"), validPersonPredicate));
+
+        ConversArrayAdapter caa = new ConversArrayAdapter(getActivity(), R.layout.list_convers, getAPeaceOfConversation());
+        mListOfConvers.setAdapter(caa);
         return view;
+    }
+
+    private List<Item> getAPeaceOfConversation() {
+        List<Item> r = new ArrayList<>();
+        for (int i = received.size(); i >= received.size()-30; ++i) {
+            if (received.isEmpty()) {
+                if (!sended.isEmpty())
+                    r.add(sended.pop());
+                else
+                    return r;
+            }
+            else if(sended.isEmpty()) {
+                if (!received.isEmpty())
+                    r.add(received.pop());
+                else
+                    return r;
+            }
+            else if (received.peek().getDate().before(sended.peek().getDate())) {
+                r.add(received.pop());
+            } else {
+                r.add(sended.pop());
+            }
+        }
+        return r;
     }
 
     @OnTouch(R.id.send_content)
@@ -69,32 +103,5 @@ public class ConversationFragment extends MainFragment {
     @Override
     protected String getTitle() {
         return from;
-    }
-    private ArrayList<Item> filterConvers(ArrayList<Item> allIncom, ArrayList<Item> allSend){
-        ArrayList<Item> out = new ArrayList<Item>();
-        for (Item it:allIncom)
-            if(it.getAddress().endsWith(from))
-                out.add(it);
-        for (Item ic:allSend)
-            if(ic.getAddress().endsWith(from))
-            {
-                String buff = ic.getContent();
-                ic.setContent("You : "+buff);
-                out.add(ic);
-            }
-        Collections.sort(out, new Comparator<Item>() {
-            public int compare(Item emp1, Item emp2) {
-                return emp1.getDate().compareToIgnoreCase(emp2.getDate());
-            }
-        });
-        for (Item ip:out) {
-            String date = ((MainActivity) getActivity()).convertDate(ip.getDate());
-            ip.setDate(date);
-        }
-        return out;
-    }
-    private void displayListContent(ArrayList<Item> list){
-        ConversArrayAdapter caa = new ConversArrayAdapter(getActivity(), R.layout.list_convers, list);
-        mListOfConvers.setAdapter(caa);
     }
 }

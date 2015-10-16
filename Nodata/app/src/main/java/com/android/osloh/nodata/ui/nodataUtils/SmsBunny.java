@@ -1,4 +1,4 @@
-package com.android.osloh.nodata.ui.Utils;
+package com.android.osloh.nodata.ui.nodataUtils;
 
 import android.content.Context;
 import android.telephony.SmsManager;

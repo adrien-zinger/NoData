@@ -7,15 +7,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.android.osloh.nodata.R;
-import com.android.osloh.nodata.ui.Utils.Item;
-import java.util.ArrayList;
+import com.android.osloh.nodata.ui.nodataUtils.Item;
+
+import java.util.List;
 
 /**
  * Created by Charles on 10/10/2015.
  */
 public class ConversArrayAdapter  extends ArrayAdapter<Item> {
-    private ArrayList<Item> objects;
-    public ConversArrayAdapter(Context context, int textViewResourceId, ArrayList<Item> objects) {
+    private List<Item> objects;
+    public ConversArrayAdapter(Context context, int textViewResourceId, List<Item> objects) {
         super(context, textViewResourceId, objects);
         this.objects = objects;
     }
@@ -32,7 +33,7 @@ public class ConversArrayAdapter  extends ArrayAdapter<Item> {
             TextView date = (TextView) v.findViewById(R.id.datetext);
 
             if (content != null){
-                content.setText(i.getDate());
+                content.setText(i.getDate().toString());
             }
             if (date != null){
                 date.setText(i.getContent());
