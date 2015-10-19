@@ -1,23 +1,25 @@
 package com.android.osloh.nodata.ui.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.nodataUtils.Filter;
 import com.android.osloh.nodata.ui.nodataUtils.Item;
 import com.android.osloh.nodata.ui.nodataUtils.SmsBunny;
 import com.android.osloh.nodata.ui.activity.MainActivity;
-import com.android.osloh.nodata.ui.adapter.ConversArrayAdapter;
+import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,8 +34,11 @@ public class ConversationFragment extends MainFragment {
 
     @Bind(R.id.send_content)
     public EditText mSendContent;
+
     @Bind(R.id.listofConvers)
-    public ListView mListOfConvers;
+    public RecyclerView mListOfConvers;
+
+    private ConversationSwipeAdapter mConversationSwipeAdapter;
 
     private String from;
     private Stack<Item> received = new Stack<>();
@@ -49,7 +54,7 @@ public class ConversationFragment extends MainFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.convers_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_conversation, container, false);
         ButterKnife.bind(this, view);
 
         Filter.Predicate<Item> validPersonPredicate = new Filter.Predicate<Item>() {
@@ -60,27 +65,21 @@ public class ConversationFragment extends MainFragment {
         received.addAll(Filter.filter(((MainActivity) getActivity()).getConversContent("inbox"), validPersonPredicate));
         sended.addAll(Filter.filter(((MainActivity) getActivity()).getConversContent("sent"), validPersonPredicate));
 
-        ConversArrayAdapter caa = new ConversArrayAdapter(getActivity(), R.layout.list_convers, getAPeaceOfConversation());
-        mListOfConvers.setAdapter(caa);
+        mConversationSwipeAdapter = new ConversationSwipeAdapter(getActivity());
+        mListOfConvers.setAdapter(mConversationSwipeAdapter);
         return view;
     }
 
     private List<Item> getAPeaceOfConversation() {
         List<Item> r = new ArrayList<>();
-        for (int i = received.size(); i >= received.size()-30; ++i) {
-            if (received.isEmpty()) {
-                if (!sended.isEmpty())
-                    r.add(sended.pop());
-                else
-                    return r;
-            }
-            else if(sended.isEmpty()) {
-                if (!received.isEmpty())
-                    r.add(received.pop());
-                else
-                    return r;
-            }
-            else if (received.peek().getDate().before(sended.peek().getDate())) {
+        for (int i = 0; i <= 30; ++i) {
+            if (received.size() == 0 && sended.size() == 0) {
+                return r;
+            } else if (received.size() == 0) {
+                r.add(sended.pop());
+            } else if (sended.size() == 0) {
+                r.add(received.pop());
+            } else if (received.peek().getDate().before(sended.peek().getDate())) {
                 r.add(received.pop());
             } else {
                 r.add(sended.pop());
@@ -103,5 +102,13 @@ public class ConversationFragment extends MainFragment {
     @Override
     protected String getTitle() {
         return from;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mConversationSwipeAdapter.getItemCount() == 0) {
+            mConversationSwipeAdapter.update(getAPeaceOfConversation());
+        }
     }
 }

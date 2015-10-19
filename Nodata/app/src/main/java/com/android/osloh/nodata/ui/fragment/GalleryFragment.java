@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,7 +31,7 @@ public class GalleryFragment extends MainFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.gallery_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         ButterKnife.bind(this, view);
         displayListeView("inbox");
         return (container == null) ? null : view;
@@ -42,7 +41,7 @@ public class GalleryFragment extends MainFragment {
         SmsGalleryCustomArrayAdapter dataAdapter = null;
         if (type == "inbox")
             dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(),
-                    R.layout.list_item, ((MainActivity) getActivity()).getGalleryContent("inbox"));
+                    R.layout.row_gallery, ((MainActivity) getActivity()).getGalleryContent("inbox"));
         mListOfSMS.setAdapter(dataAdapter);
         mListOfSMS.setTextFilterEnabled(true);
     }

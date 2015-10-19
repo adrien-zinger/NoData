@@ -3,13 +3,15 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent" >
-    <ListView
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/listofConvers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="55dp"
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

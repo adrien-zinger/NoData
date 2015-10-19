@@ -28,7 +28,7 @@ public class SmsGalleryCustomArrayAdapter extends ArrayAdapter<Item> {
     public View getView(int position, View convertView, ViewGroup parent){
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item, null);
+            convertView = inflater.inflate(R.layout.row_gallery, null);
             convertView.setTag(new Holder(convertView));
         }
         Holder holder = (Holder) convertView.getTag();
