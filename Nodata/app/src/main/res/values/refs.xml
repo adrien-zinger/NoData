@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="ic_delete_white_24dp">#ccbf2b</drawable>
+    <drawable name="ic_done_white_24dp">#2bcca4</drawable>
+</resources>

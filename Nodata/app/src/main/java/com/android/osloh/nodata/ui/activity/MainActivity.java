@@ -1,8 +1,6 @@
 package com.android.osloh.nodata.ui.activity;
 
 import android.app.FragmentTransaction;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -11,17 +9,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.android.osloh.nodata.R;
-import com.android.osloh.nodata.ui.nodataUtils.Item;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
-import com.android.osloh.nodata.ui.fragment.MainFragment;
+import com.android.osloh.nodata.ui.database.DBAccess;
+import com.android.osloh.nodata.ui.viewNoData.fragment.MainFragment;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         loadFragment(FragmentConstants.Goto.INBOX, new Bundle());   //testing
         back = 0;
-        //startService(new Intent(MainActivity.this, UpdaterServiceManager.class));
-        // Load services to send notifications
+        DBAccess.getInstance(this).update();
     }
 
     public void loadFragment(FragmentConstants.Goto fragment, Bundle bundle) {
@@ -55,41 +48,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    public List<Item> getGalleryContent(String box) {
-        Set<String> addressList = new HashSet<>();
-        List<Item> items = new ArrayList<>();
-        String[] reqCols = new String[]{"address", "read", "date", "body"};
-        Cursor cursor = getContentResolver().query(Uri.parse("content://sms/" + box),
-                reqCols, null, null, null);
-        if (cursor != null) {
-            for (cursor.moveToFirst(); cursor.moveToNext();) {
-                if (!addressList.contains(cursor.getString(0))) {
-                    Item msgData = new Item(cursor.getString(0), cursor.getString(2),
-                            cursor.getString(3));
-                    addressList.add(cursor.getString(0));
-                    items.add(msgData);
-                }
-            }
-            cursor.close();
-        }
-        return items;
-    }
 
-    public List<Item> getConversContent(String box) {
-        List<Item> items = new ArrayList<>();
-        String[] reqCols = new String[]{"address", "read", "date", "body"};
-        Cursor cursor = getContentResolver().query(Uri.parse("content://sms/" + box),
-                reqCols, null, null, null);
-        if (cursor != null) {
-            for (cursor.moveToFirst(); cursor.moveToNext();) {
-                Item msgData = new Item(cursor.getString(0), cursor.getString(2),
-                        box.endsWith("inbox")?cursor.getString(3):"You : "+cursor.getString(3));
-                items.add(msgData);
-            }
-            cursor.close();
-        }
-        return items;
-    }
 
     @Override
     public void onBackPressed() {
@@ -125,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
         long date = Long.parseLong(in);
         String dateString = mFormatter.format(new Date(date));
         return dateString;
+    }
+
+    @Override
+    public void onStop () {
+        super.onStop();
     }
 }
 

@@ -1,14 +1,19 @@
 package com.android.osloh.nodata.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.android.osloh.nodata.R;
-import com.android.osloh.nodata.ui.nodataUtils.Item;
+import com.android.osloh.nodata.ui.activity.MainActivity;
+import com.android.osloh.nodata.ui.bean.MessageItemBean;
+import com.android.osloh.nodata.ui.database.SMSRealmObject;
+import com.android.osloh.nodata.ui.viewNoData.dialog.ReportConversationDialog;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.listeners.ActionClickListener;
 import com.tr4android.recyclerviewslideitem.SwipeAdapter;
 import com.tr4android.recyclerviewslideitem.SwipeConfiguration;
 
@@ -24,48 +29,66 @@ import butterknife.ButterKnife;
  */
 public class ConversationSwipeAdapter extends SwipeAdapter {
 
-    private List<Item> mConversations;
+    private List<SMSRealmObject> mMessages;
     private Context mContext;
 
     public ConversationSwipeAdapter(Context context) {
         mContext = context;
     }
 
-    public void update(List<Item> conversations) {
-        mConversations = conversations;
+    public void update(List<SMSRealmObject> messages) {
+        mMessages = messages;
         notifyDataSetChanged();
     }
 
     @Override
     public SwipeConfiguration onCreateSwipeConfiguration(Context context, int position) {
         return new SwipeConfiguration.Builder(context)
-                .setRightBackgroundColor(R.color.error_color)
-                .setLeftBackgroundColor(Color.GREEN)
-                .setRightUndoable(true)
+                .setLeftBackgroundColorResource(R.color.color_delete)
+                .setRightBackgroundColorResource(R.color.color_mark)
+                .setLeftUndoDescription(R.string.action_deleted)
+                .setDescriptionTextColorResource(android.R.color.white)
+                .setLeftSwipeBehaviour(SwipeConfiguration.SwipeBehaviour.NORMAL_SWIPE)
+                .setRightSwipeBehaviour(SwipeConfiguration.SwipeBehaviour.NORMAL_SWIPE)
                 .build();
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateSwipeViewHolder(ViewGroup viewGroup, int i) {
-        return new ConversationHolder(((LayoutInflater) viewGroup.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.row_conversation, null));
+        View view = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.row_message, viewGroup, true);
+        return new ConversationHolder(view);
     }
 
     @Override
     public void onBindSwipeViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ConversationHolder)holder).configure(mConversations.get(position));
+        ((ConversationHolder)holder).configure(mMessages.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return (mConversations == null) ? 0 : mConversations.size();
+        return (mMessages == null) ? 0 : mMessages.size();
     }
 
     @Override
-    public void onSwipe(int position, int direction) {
+    public void onSwipe(final int position, int direction) {
         if (direction == SWIPE_LEFT) {
-
+            final SMSRealmObject messageItemBean = mMessages.remove(position);
+            notifyItemRemoved(position);
+            Snackbar snackbar = Snackbar.with(mContext)
+                    .text("Message deleted")
+                    .actionLabel("undo")
+                    .actionListener(new ActionClickListener() {
+                        @Override
+                        public void onActionClicked(Snackbar snackbar) {
+                            mMessages.add(position, messageItemBean);
+                            notifyItemInserted(position);
+                        }
+                    });
+            SnackbarManager.show(snackbar);
         } else {
-
+            ReportConversationDialog.newInstance(this, mMessages, position)
+                    .show(((MainActivity) mContext).getFragmentManager(), "aaaaa");
         }
     }
 
@@ -80,9 +103,9 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
             ButterKnife.bind(this, itemView);
         }
 
-        public void configure(Item item) {
-            mContent.setText(item.getDate().toString());
-            mDate.setText(item.getContent());
+        public void configure(SMSRealmObject messageItemBean) {
+            mContent.setText(messageItemBean.getDate().toString());
+            mDate.setText(messageItemBean.getBody());
         }
     }
 }

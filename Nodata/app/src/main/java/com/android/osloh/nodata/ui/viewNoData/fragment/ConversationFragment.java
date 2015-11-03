@@ -1,6 +1,8 @@
-package com.android.osloh.nodata.ui.fragment;
+package com.android.osloh.nodata.ui.viewNoData.fragment;
 
 import android.os.Bundle;
+
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -9,9 +11,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.android.osloh.nodata.R;
+import com.android.osloh.nodata.ui.bean.MessageItemBean;
+import com.android.osloh.nodata.ui.database.DBAccess;
+import com.android.osloh.nodata.ui.database.SMSRealmObject;
 import com.android.osloh.nodata.ui.nodataUtils.Filter;
-import com.android.osloh.nodata.ui.nodataUtils.Item;
-import com.android.osloh.nodata.ui.nodataUtils.SmsBunny;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
 
@@ -25,6 +28,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
+import io.realm.RealmResults;
 
 /**
  * Created by adrienzinger on 29/09/15.
@@ -40,9 +44,10 @@ public class ConversationFragment extends MainFragment {
 
     private ConversationSwipeAdapter mConversationSwipeAdapter;
 
+    private RealmResults<SMSRealmObject> mConversationFromDB;
     private String from;
-    private Stack<Item> received = new Stack<>();
-    private Stack<Item> sended = new Stack<>();
+
+    private int offset;
 
     public static ConversationFragment newInstance(@SuppressWarnings("unused") Bundle bundle) {
         ConversationFragment cf = new ConversationFragment();
@@ -57,33 +62,25 @@ public class ConversationFragment extends MainFragment {
         View view = inflater.inflate(R.layout.fragment_conversation, container, false);
         ButterKnife.bind(this, view);
 
-        Filter.Predicate<Item> validPersonPredicate = new Filter.Predicate<Item>() {
-            public boolean apply(Item item) {
+        Filter.Predicate<MessageItemBean> validPersonPredicate = new Filter.Predicate<MessageItemBean>() {
+            public boolean apply(MessageItemBean item) {
                 return item.getAddress().endsWith(from);
             }
         };
-        received.addAll(Filter.filter(((MainActivity) getActivity()).getConversContent("inbox"), validPersonPredicate));
-        sended.addAll(Filter.filter(((MainActivity) getActivity()).getConversContent("sent"), validPersonPredicate));
-
         mConversationSwipeAdapter = new ConversationSwipeAdapter(getActivity());
         mListOfConvers.setAdapter(mConversationSwipeAdapter);
+        offset = 0;
         return view;
     }
 
-    private List<Item> getAPeaceOfConversation() {
-        List<Item> r = new ArrayList<>();
-        for (int i = 0; i <= 30; ++i) {
-            if (received.size() == 0 && sended.size() == 0) {
-                return r;
-            } else if (received.size() == 0) {
-                r.add(sended.pop());
-            } else if (sended.size() == 0) {
-                r.add(received.pop());
-            } else if (received.peek().getDate().before(sended.peek().getDate())) {
-                r.add(received.pop());
-            } else {
-                r.add(sended.pop());
+    private List<SMSRealmObject> getAPeaceOfConversation() {
+        List<SMSRealmObject> r = new ArrayList<>();
+        mConversationFromDB = DBAccess.getInstance(getActivity()).getConversation(from);
+        for (int i = 20 * offset; i < 20 * (offset + 1); ++i) {
+            if (mConversationFromDB.size() <= i) {
+                break;
             }
+            r.add(mConversationFromDB.get(i));
         }
         return r;
     }
@@ -96,7 +93,7 @@ public class ConversationFragment extends MainFragment {
 
     @OnClick(R.id.send_button)
     public void onClickSendButton(View view) {
-        SmsBunny.getBunny().sendSmsForGroup(getActivity(), from, mSendContent.getText().toString());
+        //SmsBunny.getBunny().sendSmsForGroup(getActivity(), from, mSendContent.getText().toString());
     }
 
     @Override
@@ -108,6 +105,7 @@ public class ConversationFragment extends MainFragment {
     public void onResume() {
         super.onResume();
         if (mConversationSwipeAdapter.getItemCount() == 0) {
+            mListOfConvers.setLayoutManager(new LinearLayoutManager(getActivity()));
             mConversationSwipeAdapter.update(getAPeaceOfConversation());
         }
     }

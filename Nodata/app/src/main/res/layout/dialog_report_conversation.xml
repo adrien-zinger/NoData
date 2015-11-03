@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_white"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:gravity="center_vertical"
+            android:text="Me rappeller :"
+            android:textColor="@color/color_black"
+            />
+
+        <TextView
+            android:id="@+id/dialog_report_conversation_manage_date_button"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:text="Gerer les dates predefinis"
+            />
+
+        <ListView
+            android:id="@+id/dialog_report_conversation_listview"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"/>
+
+        <TextView
+            android:id="@+id/dialog_report_conversation_add_date_button"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:text="+"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/primary_dark_material_light"
+            />
+
+        <TextView
+            android:id="@+id/dialog_report_conversation_option_button"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:text="Options avancées"
+            android:background="@color/primary_material_light"
+            />
+    </LinearLayout>
+</RelativeLayout>

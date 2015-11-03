@@ -1,4 +1,4 @@
-package com.android.osloh.nodata.ui.nodataUtils;
+package com.android.osloh.nodata.ui.bean;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -7,18 +7,14 @@ import java.util.Locale;
 /**
  * Created by Charles on 10/10/2015.
  */
-public class Item {
+public class MessageItemBean {
     private final SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy-MM-dd/HH/mm", Locale.FRANCE);
 
     private String date;
     private String address;
     private String content;
 
-    public Item(){
-
-    }
-
-    public Item(String i, String d, String p){
+    public MessageItemBean(String i, String d, String p){
         this.address = i;
         this.date = d;
         this.content = p;

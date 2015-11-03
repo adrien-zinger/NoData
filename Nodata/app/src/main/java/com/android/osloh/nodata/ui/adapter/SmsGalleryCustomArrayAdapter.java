@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
-import com.android.osloh.nodata.ui.nodataUtils.Item;
+import com.android.osloh.nodata.ui.bean.MessageItemBean;
 
 import java.util.List;
 
@@ -18,10 +18,10 @@ import butterknife.ButterKnife;
 /**
  * Created by Charles on 10/10/2015.
  */
-public class SmsGalleryCustomArrayAdapter extends ArrayAdapter<Item> {
-    private List<Item> mSmsList;
+public class SmsGalleryCustomArrayAdapter extends ArrayAdapter<MessageItemBean> {
+    private List<MessageItemBean> mSmsList;
 
-    public SmsGalleryCustomArrayAdapter(Context context, int textViewResourceId, List<Item> objects) {
+    public SmsGalleryCustomArrayAdapter(Context context, int textViewResourceId, List<MessageItemBean> objects) {
         super(context, textViewResourceId, objects);
         this.mSmsList = objects;
     }
@@ -32,7 +32,7 @@ public class SmsGalleryCustomArrayAdapter extends ArrayAdapter<Item> {
             convertView.setTag(new Holder(convertView));
         }
         Holder holder = (Holder) convertView.getTag();
-        Item i = mSmsList.get(position);
+        MessageItemBean i = mSmsList.get(position);
         if (i != null) {
             holder.initHolder(i.getDate().toString(), i.getAddress(), i.getContent());
         }

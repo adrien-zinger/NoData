@@ -1,4 +1,4 @@
-package com.android.osloh.nodata.ui.fragment;
+package com.android.osloh.nodata.ui.viewNoData.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,10 +12,10 @@ import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.SmsGalleryCustomArrayAdapter;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
+import com.android.osloh.nodata.ui.database.DBAccess;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.OnItemClick;
 
 public class GalleryFragment extends MainFragment {
@@ -39,9 +39,7 @@ public class GalleryFragment extends MainFragment {
 
     private void displayListeView(String type) {
         SmsGalleryCustomArrayAdapter dataAdapter = null;
-        if (type == "inbox")
-            dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(),
-                    R.layout.row_gallery, ((MainActivity) getActivity()).getGalleryContent("inbox"));
+        //DBAccess.getInstance(getActivity()). todo get last message of each conversation
         mListOfSMS.setAdapter(dataAdapter);
         mListOfSMS.setTextFilterEnabled(true);
     }
@@ -49,21 +47,6 @@ public class GalleryFragment extends MainFragment {
     /*** Butterknife Listeners
     /***********************************************/
     /***********************************************/
-
-    @OnClick(R.id.btnInbox)
-    public void onClickInboxButton(View view) {
-        displayListeView("inbox");
-    }
-
-    @OnClick(R.id.btnSentBox)
-    public void onClickSentBoxButton(View view) {
-        displayListeView("sent");
-    }
-
-    @OnClick(R.id.btnDraft)
-    public void onClickDraftButton(View view) {
-        displayListeView("draft");
-    }
 
     @OnItemClick(R.id.listofSMS)
     public void onListOfSMSItemClick(AdapterView<?> parent, View view, int position, long id) {

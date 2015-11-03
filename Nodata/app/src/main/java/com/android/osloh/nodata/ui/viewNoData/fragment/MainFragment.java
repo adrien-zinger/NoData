@@ -1,4 +1,4 @@
-package com.android.osloh.nodata.ui.fragment;
+package com.android.osloh.nodata.ui.viewNoData.fragment;
 
 import android.app.ActionBar;
 import android.app.Fragment;
