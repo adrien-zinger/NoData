@@ -35,9 +35,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        DBAccess.getInstance(this).update();
         loadFragment(FragmentConstants.Goto.INBOX, new Bundle());   //testing
         back = 0;
-        DBAccess.getInstance(this).update();
     }
 
     public void loadFragment(FragmentConstants.Goto fragment, Bundle bundle) {
@@ -47,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
                 productGalleryFragmentV3, "com.android.osloh.nodata.ui.activity.main.tag");
         fragmentTransaction.commit();
     }
-
-
 
     @Override
     public void onBackPressed() {
@@ -78,12 +76,6 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
         // todo on fait ça ou pas pour annuler ?
         // .setAction(R.string.snackbar_action_undo, clickListener)
-    }
-
-    public String convertDate(String in){
-        long date = Long.parseLong(in);
-        String dateString = mFormatter.format(new Date(date));
-        return dateString;
     }
 
     @Override

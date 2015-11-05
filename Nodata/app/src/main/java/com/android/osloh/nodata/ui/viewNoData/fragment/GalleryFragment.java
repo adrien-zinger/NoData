@@ -33,13 +33,14 @@ public class GalleryFragment extends MainFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         ButterKnife.bind(this, view);
-        displayListeView("inbox");
+        displayListeView();
         return (container == null) ? null : view;
     }
 
-    private void displayListeView(String type) {
+    private void displayListeView() {
         SmsGalleryCustomArrayAdapter dataAdapter = null;
-        //DBAccess.getInstance(getActivity()). todo get last message of each conversation
+        dataAdapter = new SmsGalleryCustomArrayAdapter(getActivity(), R.layout.row_gallery,
+        DBAccess.getInstance(getActivity()).getFirstOfConvers());
         mListOfSMS.setAdapter(dataAdapter);
         mListOfSMS.setTextFilterEnabled(true);
     }

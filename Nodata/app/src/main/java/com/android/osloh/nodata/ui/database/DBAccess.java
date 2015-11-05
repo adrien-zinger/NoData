@@ -3,10 +3,14 @@ package com.android.osloh.nodata.ui.database;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
@@ -29,31 +33,72 @@ public class DBAccess {
     }
 
     public void update() {
-        String[] reqCols = new String[]{"_id", "address", "read", "date", "body", "read"};
         Realm realm = Realm.getInstance(context);
+
         update(
                 realm,
-                realm.where(SMSRealmObject.class).equalTo("sended", "false").findAllSorted("date"),
-                context.getContentResolver().query(Uri.parse("content://sms/inbox"), reqCols, null, null, null),
-                false
+                realm.where(SMSRealmObject.class).equalTo("issended", false).findAllSorted("date"),
+                "inbox", false
         );
         update(
                 realm,
-                realm.where(SMSRealmObject.class).equalTo("sended", "true").findAllSorted("date"),
-                context.getContentResolver().query(Uri.parse("content://sms/send"), reqCols, null, null, null),
-                true
+                realm.where(SMSRealmObject.class).equalTo("issended", true).findAllSorted("date"),
+                "sent", true
         );
     }
 
-    private void update(Realm realm, RealmResults<SMSRealmObject> smsList, Cursor smsExtCursor, boolean sended) {
+    private void update(Realm realm, RealmResults<SMSRealmObject> smsList, String box, boolean sended) {
+        String[] reqCols = new String[]{"_id", "address", "read", "date", "body", "read"};
+        Cursor smsExtCursor = null;
         SMSRealmObject lastSmsSended = (smsList == null || smsList.isEmpty()) ? null : smsList.first();
-        if (lastSmsSended == null) {
-            for (smsExtCursor.moveToFirst(); smsExtCursor.moveToNext();) pushSMS(smsExtCursor, realm, sended);
-        } else {
-            for (smsExtCursor.moveToFirst();lastSmsSended.equals(smsExtCursor) || smsExtCursor.moveToNext();) {
-                pushSMS(smsExtCursor, realm, sended);
+        //if (smsList.size() == 0)
+            smsExtCursor = context.getContentResolver().query(Uri.parse("content://sms/"+box), reqCols, null, null, null);
+        /*else //A tester
+        {
+            smsExtCursor = getNewSMS(SMSRealmObject lastSmsSended, Cursor smsExtCursor, String box, String[] reqCols);
+            pushSMS(smsExtCursor, realm, sended);
+        }*/
+        if (smsExtCursor != null) {
+            if (lastSmsSended == null) {
+                for (smsExtCursor.moveToFirst(); smsExtCursor.moveToNext(); )
+                    pushSMS(smsExtCursor, realm, sended);
+            } else {
+                for (smsExtCursor.moveToFirst(); lastSmsSended.equals(smsExtCursor) || smsExtCursor.moveToNext(); ) {
+                    pushSMS(smsExtCursor, realm, sended);
+                }
+            }
+            smsExtCursor.close();
+        }
+    }
+    public Cursor getNewSMS(SMSRealmObject lastSmsSended, Cursor smsExtCursor, String box, String[] reqCols){
+        if (lastSmsSended != null) {
+            for (int i = 1; i < 10000; i++) {//trop fonsdé pour taffer
+                smsExtCursor = context.getContentResolver().query(Uri.parse("content://sms/" + box), reqCols, null, null, "LIMIT " + i);
+                for (smsExtCursor.moveToFirst(); lastSmsSended.equals(smsExtCursor) || smsExtCursor.moveToNext(); ) {
+                    return smsExtCursor;
+                }
             }
         }
+        return null;
+    }
+
+    public List<SMSRealmObject> getFirstOfConvers(){
+        List<SMSRealmObject> r = new ArrayList<>();
+        RealmResults<SMSRealmObject> buff = Realm.getInstance(context).where(SMSRealmObject.class).findAll();
+        for (SMSRealmObject smsLocalData : buff) {
+            if(r.size() == 0)
+                r.add(smsLocalData);
+            else {
+                Boolean exist = false;
+                for (SMSRealmObject smsUniqueData : r) {
+                    if (smsUniqueData.getFrom().endsWith(smsLocalData.getFrom()))
+                        exist =true;break;
+                }
+                if (!exist)
+                    r.add(smsLocalData);
+            }
+        }
+        return r;
     }
 
     /**
@@ -84,17 +129,19 @@ public class DBAccess {
                     try {
                         d = mFormatter.parse(mFormatter.format(new Date(Long.parseLong(sms.getString(2)))));
                     } catch (ParseException e) {
-                        d = new Date();
+                        d = new Date(Long.parseLong(sms.getString(2)));
                     }
-                    SMSRealmObject push = realm.createObject(SMSRealmObject.class);
+                    //SMSRealmObject push = realm.createObject(SMSRealmObject.class);
+                    SMSRealmObject push = new SMSRealmObject();
                     push.setId(sms.getString(0));
                     push.setFrom(sms.getString(1));
                     push.setDate(d);
-                    push.setBody(sms.getString(3));
+                    push.setRead((sms.getString(3).equals("")));
+                    push.setBody(sms.getString(4));
                     push.setDraft(false);
-                    push.setRead((sms.getString(4).equals("")));
                     push.setIssended(sended);
                     push.setReported(null);
+                    realm.copyToRealmOrUpdate(push);
                 }
             });
         }

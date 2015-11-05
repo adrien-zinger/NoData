@@ -23,6 +23,7 @@ public class SMSRealmObject extends RealmObject {
 
     @Ignore
     private int sessionId;
+    //private Object o;
 
     public String getId() {
         return id;
@@ -96,12 +97,14 @@ public class SMSRealmObject extends RealmObject {
         this.sessionId = sessionId;
     }
 
+    /*
     @Override
     public boolean equals(Object o) {
+        this.o = o;
         if (o instanceof SMSRealmObject) {
             SMSRealmObject s = (SMSRealmObject) o;
             return id.equals(s.id) && from.equals(s.from) && body.equals(s.body) && date.equals(s.date);
         }
         return false;
-    }
+    }*/
 }
