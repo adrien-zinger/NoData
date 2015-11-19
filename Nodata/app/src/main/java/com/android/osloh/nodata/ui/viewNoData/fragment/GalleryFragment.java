@@ -45,6 +45,11 @@ public class GalleryFragment extends MainFragment {
         mListOfSMS.setTextFilterEnabled(true);
     }
 
+    @Override
+    protected String getTitle() {
+        return "Nodata";
+    }
+
     /*** Butterknife Listeners
     /***********************************************/
     /***********************************************/

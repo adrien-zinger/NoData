@@ -1,16 +1,22 @@
 package com.android.osloh.nodata.ui.activity;
 
 import android.app.FragmentTransaction;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
 import com.android.osloh.nodata.ui.database.DBAccess;
+import com.android.osloh.nodata.ui.database.DownloadDbTask;
 import com.android.osloh.nodata.ui.viewNoData.fragment.MainFragment;
 
 import java.text.SimpleDateFormat;
@@ -34,10 +40,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        DBAccess.getInstance(this).update();
-        loadFragment(FragmentConstants.Goto.INBOX, new Bundle());   //testing
+        new DownloadDbTask(this, this).execute();
         back = 0;
+        ButterKnife.bind(this);
     }
 
     public void loadFragment(FragmentConstants.Goto fragment, Bundle bundle) {
