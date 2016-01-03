@@ -93,7 +93,11 @@ public class DBAccess {
         }
     }
 
-    public List<SMSRealmObject> getFirstOfConvers(){
+    /**
+     * Get the last message of each contact in database.
+     * @return
+     */
+    public List<SMSRealmObject> getFirstOfConversation(){
         List<SMSRealmObject> r = new ArrayList<>();
         RealmResults<SMSRealmObject> buff = Realm.getInstance(context).where(SMSRealmObject.class).findAllSorted("date", false);
         for (SMSRealmObject smsLocalData : buff) {
