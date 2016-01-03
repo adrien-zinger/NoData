@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row_gallery_container"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
@@ -10,11 +11,12 @@
         android:id="@+id/row_gallery_contact"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_margin="3dp"
         android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="9"
         android:orientation="vertical">
 
@@ -22,12 +24,13 @@
             android:id="@+id/row_gallery_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right|center_vertical" />
+            android:gravity="right|center_vertical"
+            android:text="00 00"/>
 
         <TextView
             android:id="@+id/row_gallery_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:singleLine="false" />
     </LinearLayout>
 </LinearLayout>

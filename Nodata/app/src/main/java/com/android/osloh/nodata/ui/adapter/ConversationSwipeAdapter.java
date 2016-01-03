@@ -20,9 +20,11 @@ import com.tr4android.recyclerviewslideitem.SwipeConfiguration;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Adrien on 10/10/2015.
@@ -33,6 +35,11 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
 
     private List<SMSRealmObject> mConversation;
     private Context mContext;
+
+    public static interface OnItemClickListener {
+        void onClick(SMSRealmObject conversation);
+    }
+    private OnItemClickListener mOnItemClickListener;
 
     public ConversationSwipeAdapter(Context context) {
         mContext = context;
@@ -57,19 +64,22 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateSwipeViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.row_gallery, viewGroup, true);
-        return new ConversationHolder(view);
+        return new ConversationHolder(LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.row_gallery, viewGroup, true));
     }
 
     @Override
     public void onBindSwipeViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ConversationHolder) holder).configure(mConversation.get(position));
+        ((ConversationHolder) holder).configure(position);
     }
 
     @Override
     public int getItemCount() {
         return (mConversation == null) ? 0 : mConversation.size();
+    }
+
+    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+        this.mOnItemClickListener = mOnItemClickListener;
     }
 
     @Override
@@ -102,12 +112,16 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
         @Bind(R.id.row_gallery_contact)
         TextView contact;
 
+        private int mPosition;
+
         public ConversationHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
 
-        public void configure(SMSRealmObject conversation) {
+        public void configure(int position) {
+            mPosition = position;
+            SMSRealmObject conversation = mConversation.get(mPosition);
             // Set date todo : create our date format or find good library
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, 0);
@@ -116,7 +130,7 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
             c.set(Calendar.MILLISECOND, 0);
             if (conversation.getDate().before(c.getTime())) {
                 c.setTime(conversation.getDate());
-                SimpleDateFormat format = new SimpleDateFormat("dd MM");
+                SimpleDateFormat format = new SimpleDateFormat("dd MM", Locale.getDefault());
                 date.setText(format.format(conversation.getDate()));
             } else {
                 c.setTime(conversation.getDate());
@@ -128,6 +142,11 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
 
             // todo Set contact
             contact.setText(conversation.getFrom());
+        }
+
+        @OnClick(R.id.row_gallery_container)
+        public void onClick() {
+            if (mOnItemClickListener != null) mOnItemClickListener.onClick(mConversation.get(mPosition));
         }
     }
 

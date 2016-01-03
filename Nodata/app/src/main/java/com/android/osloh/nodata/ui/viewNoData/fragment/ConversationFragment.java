@@ -67,6 +67,7 @@ public class ConversationFragment extends MainFragment {
                 return item.getAddress().endsWith(from);
             }
         };
+
         mConversationSwipeAdapter = new ConversationSwipeAdapter(getActivity());
         mListOfConvers.setAdapter(mConversationSwipeAdapter);
         offset = 0;

@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
 import com.android.osloh.nodata.R;
+import com.android.osloh.nodata.ui.constant.FragmentConstants;
 import com.android.osloh.nodata.ui.database.DBAccess;
 import com.android.osloh.nodata.ui.database.SMSRealmObject;
 
@@ -20,9 +22,10 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class GalleryFragment extends MainFragment {
+public class GalleryFragment extends MainFragment implements ConversationSwipeAdapter.OnItemClickListener {
 
     @Bind(R.id.list_of_conversations) RecyclerView mConversationList;
+    private ConversationSwipeAdapter mDataAdapter;
 
     public static GalleryFragment newInstance(@SuppressWarnings("unused") Bundle bundle) {
         return new GalleryFragment();
@@ -40,7 +43,8 @@ public class GalleryFragment extends MainFragment {
         Log.d("Gallery NoDa", "Get sms in db");
         List<SMSRealmObject> smsRealmObjects = DBAccess.getInstance(getActivity()).getFirstOfConversation();
         Log.d("Gallery NoDa", "Create adapter");
-        ConversationSwipeAdapter mDataAdapter = new ConversationSwipeAdapter(getActivity());
+        if (mDataAdapter == null) mDataAdapter = new ConversationSwipeAdapter(getActivity());
+        mDataAdapter.setOnItemClickListener(this);
         mConversationList.setAdapter(mDataAdapter);
         mConversationList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDataAdapter.update(smsRealmObjects);
@@ -52,15 +56,12 @@ public class GalleryFragment extends MainFragment {
         return "noda";
     }
 
-    public void onListOfSMSItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String date = (String) ((TextView) view.findViewById(R.id.row_gallery_date)).getText();
-        String from = (String) ((TextView) view.findViewById(R.id.row_gallery_contact)).getText();
-        String cont = (String) ((TextView) view.findViewById(R.id.row_gallery_content)).getText();
-
+    @Override
+    public void onClick(SMSRealmObject conversation) {
         Bundle bundle = new Bundle();
-        bundle.putString("from", from);
-        bundle.putString("content", cont);
-        bundle.putString("date", date);
-        //todo ((MainActivity) getActivity()).loadFragment(FragmentConstants.Goto.CONVERSATION, bundle);
+        bundle.putString("from", conversation.getFrom());
+        bundle.putString("content", conversation.getBody());
+        bundle.putString("date", conversation.getDate().toString());
+        ((MainActivity) getActivity()).loadFragment(FragmentConstants.Goto.CONVERSATION, bundle);
     }
 }
