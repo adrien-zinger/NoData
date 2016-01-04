@@ -1,51 +1,50 @@
 package com.android.osloh.nodata.ui.viewNoData.fragment;
 
 import android.os.Bundle;
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.android.osloh.nodata.R;
+import com.android.osloh.nodata.ui.adapter.MessageAdapter;
 import com.android.osloh.nodata.ui.bean.MessageItemBean;
 import com.android.osloh.nodata.ui.database.DBAccess;
 import com.android.osloh.nodata.ui.database.SMSRealmObject;
 import com.android.osloh.nodata.ui.nodataUtils.Filter;
-import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnTouch;
 import io.realm.RealmResults;
 
 /**
- * Created by adrienzinger on 29/09/15.
+ * Created by Adrien Zinger
  * Fragment for the conversation
  */
 public class ConversationFragment extends MainFragment {
 
     @Bind(R.id.send_content)
     public EditText mSendContent;
-
     @Bind(R.id.list_of_messages)
     public RecyclerView mMessage;
 
-    private ConversationSwipeAdapter mConversationSwipeAdapter;
-
+    private MessageAdapter mMessageAdapter;
     private RealmResults<SMSRealmObject> mConversationFromDB;
     private String from;
-
     private int offset;
 
-    public static ConversationFragment newInstance(@SuppressWarnings("unused") Bundle bundle) {
+    private final Filter.Predicate<MessageItemBean> validPersonPredicate = new Filter.Predicate<MessageItemBean>() {
+        public boolean apply(MessageItemBean item) {
+            return item.getAddress().endsWith(from);
+        }
+    };
+
+    public static ConversationFragment newInstance(Bundle bundle) {
         ConversationFragment cf = new ConversationFragment();
         cf.setArguments(bundle);
         cf.from = bundle.getString("from");
@@ -57,15 +56,6 @@ public class ConversationFragment extends MainFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_conversation, container, false);
         ButterKnife.bind(this, view);
-
-        Filter.Predicate<MessageItemBean> validPersonPredicate = new Filter.Predicate<MessageItemBean>() {
-            public boolean apply(MessageItemBean item) {
-                return item.getAddress().endsWith(from);
-            }
-        };
-
-        mConversationSwipeAdapter = new ConversationSwipeAdapter(getActivity());
-        mMessage.setAdapter(mConversationSwipeAdapter);
         offset = 0;
         return view;
     }
@@ -82,12 +72,6 @@ public class ConversationFragment extends MainFragment {
         return r;
     }
 
-    @OnTouch(R.id.send_content)
-    public boolean onTouchSendContent(View view, MotionEvent motionEvent) {
-        ((EditText) view).setText("");
-        return false;
-    }
-
     @Override
     protected String getTitle() {
         return from;
@@ -96,9 +80,14 @@ public class ConversationFragment extends MainFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mConversationSwipeAdapter.getItemCount() == 0) {
-            mMessage.setLayoutManager(new LinearLayoutManager(getActivity()));
-            mConversationSwipeAdapter.update(getAPeaceOfConversation());
+        if (mMessageAdapter == null) {
+            mMessageAdapter = new MessageAdapter(getActivity());
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+            linearLayoutManager.setReverseLayout(true);
+            linearLayoutManager.setStackFromEnd(true);
+            mMessage.setLayoutManager(linearLayoutManager);
+            mMessage.setAdapter(mMessageAdapter);
         }
+        mMessageAdapter.update(getAPeaceOfConversation());
     }
 }

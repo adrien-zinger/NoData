@@ -7,12 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.TextView;
 
+import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
-import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
 import com.android.osloh.nodata.ui.database.DBAccess;
 import com.android.osloh.nodata.ui.database.SMSRealmObject;
@@ -22,9 +20,13 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ *
+ */
 public class GalleryFragment extends MainFragment implements ConversationSwipeAdapter.OnItemClickListener {
 
-    @Bind(R.id.list_of_conversations) RecyclerView mConversationList;
+    @Bind(R.id.list_of_conversations)
+    RecyclerView mConversationList;
     private ConversationSwipeAdapter mDataAdapter;
 
     public static GalleryFragment newInstance(@SuppressWarnings("unused") Bundle bundle) {

@@ -34,33 +34,34 @@ import butterknife.OnClick;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
     private List<SMSRealmObject> mMessages;
+    private OnItemClickListener mOnItemClickListener;
     private Context mContext;
 
     private static final int TYPE_MESSAGE_SENT = 0;
     private static final int TYPE_MESSAGE_RECEIVED = 1;
 
+    public MessageAdapter(Context context) {
+        mContext = context;
+    }
+
     @Override
     public MessageHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        int layout = (viewType == TYPE_MESSAGE_RECEIVED) ? R.layout.row_conversation_received : R.layout.row_conversation_sent;
+        return new MessageHolder(LayoutInflater.from(parent.getContext()).inflate(layout, parent, true));
     }
 
     @Override
     public void onBindViewHolder(MessageHolder holder, int position) {
-
+        holder.configure(position);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mMessages.size();
     }
 
     public static interface OnItemClickListener {
         void onClick(SMSRealmObject conversation);
-    }
-    private OnItemClickListener mOnItemClickListener;
-
-    public MessageAdapter(Context context) {
-        mContext = context;
     }
 
     public void update(List<SMSRealmObject> messages) {
@@ -78,8 +79,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         TextView date;
         @Bind(R.id.row_gallery_content)
         TextView content;
-        @Bind(R.id.row_gallery_contact)
-        TextView contact;
 
         private int mPosition;
 
@@ -108,9 +107,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
             // todo Set content
             content.setText(conversation.getBody());
-
-            // todo Set contact
-            contact.setText(conversation.getFrom());
         }
 
         @OnClick(R.id.row_gallery_container)
