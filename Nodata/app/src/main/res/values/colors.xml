@@ -9,4 +9,5 @@
     <color name="message_sent">#000000</color>
     <color name="message_received">#000000</color>
     <color name="message_date">#000000</color>
+    <color name="send_background">#fff4f4f4</color>
 </resources>

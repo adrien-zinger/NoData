@@ -7,7 +7,7 @@
     android:padding="6dip">
 
     <TextView
-        android:id="@+id/row_conversation_sended_content"
+        android:id="@+id/row_conversation_sent_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="right"
@@ -16,7 +16,7 @@
         android:textColor="@color/message_sent" />
 
     <TextView
-        android:id="@+id/row_conversation_sended_date"
+        android:id="@+id/row_conversation_sent_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

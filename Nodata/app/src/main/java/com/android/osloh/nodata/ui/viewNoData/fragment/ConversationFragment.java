@@ -15,18 +15,14 @@ import com.android.osloh.nodata.ui.bean.MessageItemBean;
 import com.android.osloh.nodata.ui.database.DBAccess;
 import com.android.osloh.nodata.ui.database.SMSRealmObject;
 import com.android.osloh.nodata.ui.nodataUtils.Filter;
-import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
-
 
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.OnTouch;
 import io.realm.RealmResults;
 
@@ -39,8 +35,8 @@ public class ConversationFragment extends MainFragment {
     @Bind(R.id.send_content)
     public EditText mSendContent;
 
-    @Bind(R.id.listofConvers)
-    public RecyclerView mListOfConvers;
+    @Bind(R.id.list_of_messages)
+    public RecyclerView mMessage;
 
     private ConversationSwipeAdapter mConversationSwipeAdapter;
 
@@ -69,7 +65,7 @@ public class ConversationFragment extends MainFragment {
         };
 
         mConversationSwipeAdapter = new ConversationSwipeAdapter(getActivity());
-        mListOfConvers.setAdapter(mConversationSwipeAdapter);
+        mMessage.setAdapter(mConversationSwipeAdapter);
         offset = 0;
         return view;
     }
@@ -92,11 +88,6 @@ public class ConversationFragment extends MainFragment {
         return false;
     }
 
-    @OnClick(R.id.send_button)
-    public void onClickSendButton(View view) {
-        //SmsBunny.getBunny().sendSmsForGroup(getActivity(), from, mSendContent.getText().toString());
-    }
-
     @Override
     protected String getTitle() {
         return from;
@@ -106,7 +97,7 @@ public class ConversationFragment extends MainFragment {
     public void onResume() {
         super.onResume();
         if (mConversationSwipeAdapter.getItemCount() == 0) {
-            mListOfConvers.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mMessage.setLayoutManager(new LinearLayoutManager(getActivity()));
             mConversationSwipeAdapter.update(getAPeaceOfConversation());
         }
     }

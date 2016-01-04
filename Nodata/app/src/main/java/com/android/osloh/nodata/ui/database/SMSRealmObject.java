@@ -16,7 +16,7 @@ public class SMSRealmObject extends RealmObject {
     private String from;
     private String body;
     private Date date;
-    private boolean issended;
+    private boolean isSent;
     private Date reported;
     private boolean read;
     private boolean draft;
@@ -57,12 +57,12 @@ public class SMSRealmObject extends RealmObject {
         this.date = date;
     }
 
-    public boolean issended() {
-        return issended;
+    public boolean isSent() {
+        return isSent;
     }
 
-    public void setIssended(boolean issended) {
-        this.issended = issended;
+    public void setSent(boolean sent) {
+        this.isSent = sent;
     }
 
     public Date getReported() {
