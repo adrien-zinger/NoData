@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignTop="@id/fragment_conversation_send_button"
+        android:layout_alignTop="@+id/fragment_conversation_send_button_container"
         android:background="@color/send_background"
         android:orientation="horizontal" />
 
@@ -22,8 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignTop="@id/fragment_conversation_send_button"
-        android:layout_toLeftOf="@id/fragment_conversation_send_button"
+        android:layout_alignTop="@id/fragment_conversation_send_button_container"
+        android:layout_toLeftOf="@id/fragment_conversation_send_button_container"
         android:orientation="horizontal">
 
         <EditText
@@ -34,13 +34,20 @@
 
     </RelativeLayout>
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fragment_conversation_send_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+    <RelativeLayout
+        android:id="@id/fragment_conversation_send_button_container"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        fab:fab_colorNormal="@color/color_white"
-        fab:fab_colorPressed="@color/color_white"
-        fab:fab_size="mini" />
+        android:gravity="center">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fragment_conversation_send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/color_white"
+            fab:fab_colorPressed="@color/color_white"
+            fab:fab_size="mini" />
+    </RelativeLayout>
 </RelativeLayout>

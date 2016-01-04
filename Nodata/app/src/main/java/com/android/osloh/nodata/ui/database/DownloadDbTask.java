@@ -24,7 +24,7 @@ public class DownloadDbTask extends AsyncTask<Void, Void, Void>{
 
     @Override
     protected Void doInBackground(Void ... voids) {
-        DBAccess.getInstance(context).update();
+
         return null;
     }
 
@@ -35,6 +35,6 @@ public class DownloadDbTask extends AsyncTask<Void, Void, Void>{
 
     protected void onPostExecute(Void unused){
             Dialog.dismiss();
-            mainActivity.loadFragment(FragmentConstants.Goto.INBOX, new Bundle());
+
     }
 }

@@ -3,6 +3,7 @@ package com.android.osloh.nodata.ui.database;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,35 +51,33 @@ public class DBAccess {
         String[] reqCols = new String[]{"_id", "address", "read", "date", "body", "read"};
         Cursor smsExtCursor = null;
         smsList.sort("date", false);
-        SMSRealmObject lastSmsSended =
-                (smsList == null || smsList.isEmpty()) ? null : smsList.first();
-        if (smsList.size() == 0)//Local database empty, first use
-        {
-            smsExtCursor = context.getContentResolver().query(Uri.parse("content://sms/"+box),
+        SMSRealmObject lastSmsSent = (smsList.isEmpty()) ? null : smsList.first();
+        if (smsList.size() == 0) {//Local database empty, first use
+            Log.d("DBAccess", "first use");
+            smsExtCursor = context.getContentResolver().query(Uri.parse("content://sms/" + box),
                     reqCols, null, null, null);
             if (smsExtCursor != null) {
-                if (lastSmsSended == null) {
-                    for (smsExtCursor.moveToFirst(); smsExtCursor.moveToNext(); )
+                if (lastSmsSent == null) {
+                    for (smsExtCursor.moveToFirst(); smsExtCursor.moveToNext(); ) {
                         pushSMS(smsExtCursor, realm, sent);
+                    }
                 } else {
                     for (smsExtCursor.moveToFirst();
-                         lastSmsSended.equals(smsExtCursor) || smsExtCursor.moveToNext(); ) {
+                         lastSmsSent.equals(smsExtCursor) || smsExtCursor.moveToNext(); ) {
                         pushSMS(smsExtCursor, realm, sent);
                     }
                 }
             }
             smsExtCursor.close();
-        }
-        else
-        {
-            if (lastSmsSended != null) {
+        } else {
+            Log.d("DBAccess", "second use");
+            if (lastSmsSent != null) {
                 boolean run = true;
-                for (int i = 1 ; !run ; i++) {
+                for (int i = 1; !run; i++) {
                     smsExtCursor = context.getContentResolver().query(Uri.parse("content://sms/" + box)
                             .buildUpon().encodedQuery("limit=2," + i).build(), reqCols, null, null, null);
                     for (smsExtCursor.moveToFirst(); smsExtCursor.moveToNext(); ) {
-                        if (lastSmsSended.equals(smsExtCursor))
-                        {
+                        if (lastSmsSent.equals(smsExtCursor)) {
                             pushSMS(smsExtCursor, realm, sent);
                             run = false;
                             break;
@@ -93,20 +92,20 @@ public class DBAccess {
 
     /**
      * Get the last message of each contact in database.
+     *
      * @return
      */
-    public List<SMSRealmObject> getFirstOfConversation(){
+    public List<SMSRealmObject> getFirstOfConversation() {
         List<SMSRealmObject> r = new ArrayList<>();
         RealmResults<SMSRealmObject> buff = Realm.getInstance(context).where(SMSRealmObject.class).findAllSorted("date", false);
         for (SMSRealmObject smsLocalData : buff) {
-            if(r.size() == 0)
+            if (r.size() == 0)
                 r.add(smsLocalData);
             else {
                 Boolean exist = false;
                 for (SMSRealmObject smsUniqueData : r) {
-                    if (smsUniqueData.getFrom().equals(smsLocalData.getFrom()))
-                    {
-                        exist =true;
+                    if (smsUniqueData.getFrom().equals(smsLocalData.getFrom())) {
+                        exist = true;
                         break;
                     }
                 }
@@ -119,6 +118,7 @@ public class DBAccess {
 
     /**
      * Return a converstation send and receive merge order by date
+     *
      * @param from from
      * @return converstation send and receive merge order by date in RealmResults<SMSRealmObject>
      */
@@ -133,11 +133,12 @@ public class DBAccess {
 
     /**
      * Push sms in local database
+     *
      * @param sms
      * @param real
      */
-    private void pushSMS(final Cursor sms, Realm real, final boolean sent){
-        if(sms != null) {
+    private void pushSMS(final Cursor sms, Realm real, final boolean sent) {
+        if (sms != null) {
             real.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -147,11 +148,15 @@ public class DBAccess {
                     } catch (ParseException e) {
                         d = new Date(Long.parseLong(sms.getString(3)));
                     }
-                    String cont =(sent) ? sms.getString(4):sms.getString(4);
+                    String cont = (sent) ? sms.getString(4) : sms.getString(4);
                     //SMSRealmObject push = realm.createObject(SMSRealmObject.class);
                     SMSRealmObject push = new SMSRealmObject();
                     push.setId(sms.getString(0));
-                    push.setFrom("from_me");
+                    String fr = sms.getString(1);
+                    if (!sms.getString(1).contains("+33") && sms.getString(1).length() == 10) {
+                        fr = "+33" + sms.getString(1).substring(1);
+                    }
+                    push.setFrom(fr);
                     push.setRead((sms.getString(2).equals("")));
                     push.setDate(d);
                     push.setBody(cont);

@@ -7,7 +7,7 @@
     android:padding="6dip">
 
     <TextView
-        android:id="@+id/row_conversation_received_content"
+        android:id="@+id/row_conversation_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -15,7 +15,7 @@
         android:text="message received" />
 
     <TextView
-        android:id="@+id/row_conversation_received_date"
+        android:id="@+id/row_conversation_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/message_date"

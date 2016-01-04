@@ -1,26 +1,20 @@
 package com.android.osloh.nodata.ui.activity;
 
 import android.app.FragmentTransaction;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
 import com.android.osloh.nodata.ui.database.DBAccess;
-import com.android.osloh.nodata.ui.database.DownloadDbTask;
 import com.android.osloh.nodata.ui.viewNoData.fragment.MainFragment;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 import butterknife.Bind;
@@ -40,12 +34,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new DownloadDbTask(this, this).execute();
+        //new DownloadDbTask(this, this).execute();
         back = 0;
+        DBAccess.getInstance(this).update();
+        loadFragment(FragmentConstants.Goto.INBOX, new Bundle());
         ButterKnife.bind(this);
     }
 
     public void loadFragment(FragmentConstants.Goto fragment, Bundle bundle) {
+        Log.d("Noda main", "load fragment");
         MainFragment productGalleryFragmentV3 = fragment.getInstance(bundle);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container_for_main_activity,
@@ -55,16 +52,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (back < 2)
-        {
+        if (back < 2) {
             back++;
             loadFragment(FragmentConstants.Goto.INBOX, new Bundle());
-        }
-        else {
+        } else {
             moveTaskToBack(true);
             back = 0;
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -84,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStop () {
+    public void onStop() {
         super.onStop();
     }
 }

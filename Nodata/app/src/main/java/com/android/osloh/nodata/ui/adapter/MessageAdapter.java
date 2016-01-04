@@ -47,7 +47,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     @Override
     public MessageHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         int layout = (viewType == TYPE_MESSAGE_RECEIVED) ? R.layout.row_conversation_received : R.layout.row_conversation_sent;
-        return new MessageHolder(LayoutInflater.from(parent.getContext()).inflate(layout, parent, true));
+        return new MessageHolder(LayoutInflater.from(parent.getContext()).inflate(layout, parent, false));
     }
 
     @Override
@@ -71,13 +71,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
     @Override
     public int getItemViewType(int position) {
-        return (mMessages.get(position).getFrom().equals("from_me")) ? TYPE_MESSAGE_SENT : TYPE_MESSAGE_RECEIVED;
+        return (mMessages.get(position).isSent()) ? TYPE_MESSAGE_SENT : TYPE_MESSAGE_RECEIVED;
     }
 
     public class MessageHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.row_gallery_date)
+        @Bind(R.id.row_conversation_date)
         TextView date;
-        @Bind(R.id.row_gallery_content)
+        @Bind(R.id.row_conversation_content)
         TextView content;
 
         private int mPosition;
@@ -107,11 +107,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
             // todo Set content
             content.setText(conversation.getBody());
-        }
-
-        @OnClick(R.id.row_gallery_container)
-        public void onClick() {
-            if (mOnItemClickListener != null) mOnItemClickListener.onClick(mMessages.get(mPosition));
         }
     }
 }
