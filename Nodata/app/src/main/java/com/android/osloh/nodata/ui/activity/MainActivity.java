@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
 import com.android.osloh.nodata.ui.database.DBAccess;
+import com.android.osloh.nodata.ui.database.DownloadDbTask;
 import com.android.osloh.nodata.ui.viewNoData.fragment.MainFragment;
 
 import java.text.SimpleDateFormat;

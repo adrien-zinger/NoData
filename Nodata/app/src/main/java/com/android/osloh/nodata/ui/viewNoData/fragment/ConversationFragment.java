@@ -84,7 +84,6 @@ public class ConversationFragment extends MainFragment {
             mMessageAdapter = new MessageAdapter(getActivity());
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             linearLayoutManager.setReverseLayout(true);
-            linearLayoutManager.setStackFromEnd(true);
             mMessage.setLayoutManager(linearLayoutManager);
             mMessage.setAdapter(mMessageAdapter);
         }

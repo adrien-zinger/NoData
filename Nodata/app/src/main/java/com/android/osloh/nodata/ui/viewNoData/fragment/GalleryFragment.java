@@ -1,6 +1,7 @@
 package com.android.osloh.nodata.ui.viewNoData.fragment;
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -51,11 +52,14 @@ public class GalleryFragment extends MainFragment implements ConversationSwipeAd
         mConversationList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDataAdapter.update(smsRealmObjects);
         Log.d("Gallery NoDa", "List displayed");
+        final android.support.v7.app.ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setTitle(getTitle());
     }
 
     @Override
     protected String getTitle() {
-        return "noda";
+        return "Nodata";
     }
 
     @Override
