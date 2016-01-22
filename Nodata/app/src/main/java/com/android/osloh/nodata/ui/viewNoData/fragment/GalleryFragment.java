@@ -43,15 +43,16 @@ public class GalleryFragment extends MainFragment implements ConversationSwipeAd
     }
 
     private void displayListView() {
-        Log.d("Gallery NoDa", "Get sms in db");
+        Log.d("Gallery NoData", "Get sms in db");
+        DBAccess.getInstance(getActivity()).update();
         List<SMSRealmObject> smsRealmObjects = DBAccess.getInstance(getActivity()).getFirstOfConversation();
-        Log.d("Gallery NoDa", "Create adapter");
+        Log.d("Gallery NoData", "Create adapter");
         if (mDataAdapter == null) mDataAdapter = new ConversationSwipeAdapter(getActivity());
         mDataAdapter.setOnItemClickListener(this);
         mConversationList.setAdapter(mDataAdapter);
         mConversationList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDataAdapter.update(smsRealmObjects);
-        Log.d("Gallery NoDa", "List displayed");
+        Log.d("Gallery NoData", "List displayed");
         final android.support.v7.app.ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null)
             actionBar.setTitle(getTitle());

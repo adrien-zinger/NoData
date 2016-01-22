@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //new DownloadDbTask(this, this).execute();
         back = 0;
-        DBAccess.getInstance(this).update();
+        //DBAccess.getInstance(this).update();
         loadFragment(FragmentConstants.Goto.INBOX, new Bundle());
         ButterKnife.bind(this);
     }

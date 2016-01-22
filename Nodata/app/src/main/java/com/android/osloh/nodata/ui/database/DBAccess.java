@@ -5,13 +5,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
+import com.android.osloh.nodata.ui.nodataUtils.StringCryptor;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -52,6 +53,7 @@ public class DBAccess {
         Cursor smsExtCursor = null;
         smsList.sort("date", false);
         SMSRealmObject lastSmsSent = (smsList.isEmpty()) ? null : smsList.first();
+        String type = (sent)?"sended":"received";
         if (smsList.size() == 0) {//Local database empty, first use
             Log.d("DBAccess", "first use");
             smsExtCursor = context.getContentResolver().query(Uri.parse("content://sms/" + box),
@@ -63,7 +65,9 @@ public class DBAccess {
                     }
                 } else {
                     for (smsExtCursor.moveToFirst();
-                         lastSmsSent.equals(smsExtCursor) || smsExtCursor.moveToNext(); ) {
+                         (lastSmsSent.getBody().equals(smsExtCursor.getString(4))
+                                 && lastSmsSent.getFrom().equals(smsExtCursor.getString(1)))
+                                 || smsExtCursor.moveToNext(); ) {
                         pushSMS(smsExtCursor, realm, sent);
                     }
                 }
@@ -73,12 +77,14 @@ public class DBAccess {
             Log.d("DBAccess", "second use");
             if (lastSmsSent != null) {
                 boolean run = true;
-                for (int i = 1; !run; i++) {
+                for (int i = 1; run&&i<100; i++) {
                     smsExtCursor = context.getContentResolver().query(Uri.parse("content://sms/" + box)
-                            .buildUpon().encodedQuery("limit=2," + i).build(), reqCols, null, null, null);
+                            .buildUpon().appendQueryParameter("limit", String.valueOf(i))
+                            .build(), reqCols, null, null, null);
                     for (smsExtCursor.moveToFirst(); smsExtCursor.moveToNext(); ) {
-                        if (lastSmsSent.equals(smsExtCursor)) {
-                            pushSMS(smsExtCursor, realm, sent);
+                        pushSMS(smsExtCursor, realm, sent);
+                        if (lastSmsSent.getBody().equals(smsExtCursor.getString(4))
+                                && lastSmsSent.getFrom().equals(smsExtCursor.getString(1))) {
                             run = false;
                             break;
                         }
@@ -159,6 +165,11 @@ public class DBAccess {
                     push.setFrom(fr);
                     push.setRead((sms.getString(2).equals("")));
                     push.setDate(d);
+                    /*try {
+                        String encryptedPassword = StringCryptor.encrypt(new String(PASSWORD), cont);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }*/
                     push.setBody(cont);
                     push.setDraft(false);
                     push.setSent(sent);
