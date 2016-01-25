@@ -10,7 +10,7 @@ import com.android.osloh.nodata.ui.constant.FragmentConstants;
 /**
  * Created by Charles on 11/11/2015.
  */
-// ASync Task Begin to perform Billing information
+// ASync Task Begin to perform Charging informations
 public class DownloadDbTask extends AsyncTask<Void, Void, Void>{
 
     private ProgressDialog Dialog;

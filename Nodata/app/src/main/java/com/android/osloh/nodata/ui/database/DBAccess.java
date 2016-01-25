@@ -4,9 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-
 import com.android.osloh.nodata.ui.nodataUtils.StringCryptor;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,9 +19,9 @@ import io.realm.RealmResults;
  */
 public class DBAccess {
     private static DBAccess ourInstance = new DBAccess();
-
     private Context context;
-
+    // Change the password here or give a user possibility to change it
+    public static final byte[] PASSWORD = new byte[]{0x20, 0x32, 0x34, 0x47, (byte) 0x84, 0x33, 0x58};
     private final SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy-MM-dd/HH/mm",
             Locale.FRANCE);
 
@@ -49,11 +47,13 @@ public class DBAccess {
 
     private void update(Realm realm, RealmResults<SMSRealmObject> smsList,
                         String box, boolean sent) {
+        int nbrLoad = 0;
         String[] reqCols = new String[]{"_id", "address", "read", "date", "body", "read"};
         Cursor smsExtCursor = null;
         smsList.sort("date", false);
         SMSRealmObject lastSmsSent = (smsList.isEmpty()) ? null : smsList.first();
         String type = (sent)?"sended":"received";
+        Log.d("DBAccess", "Last " + type + " SMS " + lastSmsSent);
         if (smsList.size() == 0) {//Local database empty, first use
             Log.d("DBAccess", "first use");
             smsExtCursor = context.getContentResolver().query(Uri.parse("content://sms/" + box),
@@ -62,27 +62,23 @@ public class DBAccess {
                 if (lastSmsSent == null) {
                     for (smsExtCursor.moveToFirst(); smsExtCursor.moveToNext(); ) {
                         pushSMS(smsExtCursor, realm, sent);
-                    }
-                } else {
-                    for (smsExtCursor.moveToFirst();
-                         (lastSmsSent.getBody().equals(smsExtCursor.getString(4))
-                                 && lastSmsSent.getFrom().equals(smsExtCursor.getString(1)))
-                                 || smsExtCursor.moveToNext(); ) {
-                        pushSMS(smsExtCursor, realm, sent);
+                        nbrLoad ++;
+                        Log.d("DBAccess", "SMS " + type + " loaded : " + nbrLoad);
                     }
                 }
             }
             smsExtCursor.close();
         } else {
-            Log.d("DBAccess", "second use");
+            Log.d("DBAccess", "update db");
             if (lastSmsSent != null) {
                 boolean run = true;
                 for (int i = 1; run&&i<100; i++) {
                     smsExtCursor = context.getContentResolver().query(Uri.parse("content://sms/" + box)
                             .buildUpon().appendQueryParameter("limit", String.valueOf(i))
-                            .build(), reqCols, null, null, null);
+                            .build(), reqCols, null, null, "date desc");
                     for (smsExtCursor.moveToFirst(); smsExtCursor.moveToNext(); ) {
                         pushSMS(smsExtCursor, realm, sent);
+                        Log.d("DBAccess", "First SMS " + smsExtCursor.getString(4));
                         if (lastSmsSent.getBody().equals(smsExtCursor.getString(4))
                                 && lastSmsSent.getFrom().equals(smsExtCursor.getString(1))) {
                             run = false;
@@ -155,7 +151,6 @@ public class DBAccess {
                         d = new Date(Long.parseLong(sms.getString(3)));
                     }
                     String cont = (sent) ? sms.getString(4) : sms.getString(4);
-                    //SMSRealmObject push = realm.createObject(SMSRealmObject.class);
                     SMSRealmObject push = new SMSRealmObject();
                     push.setId(sms.getString(0));
                     String fr = sms.getString(1);
@@ -165,8 +160,9 @@ public class DBAccess {
                     push.setFrom(fr);
                     push.setRead((sms.getString(2).equals("")));
                     push.setDate(d);
+                    String encryptedPassword = "";
                     /*try {
-                        String encryptedPassword = StringCryptor.encrypt(new String(PASSWORD), cont);
+                        encryptedPassword = StringCryptor.encrypt(new String(PASSWORD), cont);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }*/
@@ -178,5 +174,24 @@ public class DBAccess {
                 }
             });
         }
+    }
+    /**
+     * Return decrypted list
+     *
+     * @param encryptdb Encrypted database
+     * @return Decrypt body of RealmResults<SMSRealmObject>
+     */
+    public RealmResults<SMSRealmObject> DecryptDb(RealmResults<SMSRealmObject> encryptdb) {
+        String bod = null;
+        for (SMSRealmObject sro: encryptdb){
+            try {
+                bod = StringCryptor.decrypt(new String(PASSWORD), sro.getBody());
+                Log.d("DBAccess","Decrypt ok");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            sro.setBody(bod);
+        }
+        return encryptdb;
     }
 }

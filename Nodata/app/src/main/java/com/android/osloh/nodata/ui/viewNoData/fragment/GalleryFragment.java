@@ -15,6 +15,7 @@ import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
 import com.android.osloh.nodata.ui.database.DBAccess;
 import com.android.osloh.nodata.ui.database.SMSRealmObject;
+import com.android.osloh.nodata.ui.listener.scrollListener;
 
 import java.util.List;
 
@@ -51,6 +52,7 @@ public class GalleryFragment extends MainFragment implements ConversationSwipeAd
         mDataAdapter.setOnItemClickListener(this);
         mConversationList.setAdapter(mDataAdapter);
         mConversationList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mConversationList.addOnScrollListener(new scrollListener(mConversationList, (LinearLayoutManager)mConversationList.getLayoutManager()));
         mDataAdapter.update(smsRealmObjects);
         Log.d("Gallery NoData", "List displayed");
         final android.support.v7.app.ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();

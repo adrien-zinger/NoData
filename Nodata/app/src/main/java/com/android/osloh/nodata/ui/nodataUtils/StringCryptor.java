@@ -1,10 +1,20 @@
 package com.android.osloh.nodata.ui.nodataUtils;
 
 import android.util.Base64;
+
+import java.nio.charset.Charset;
+import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -48,8 +58,8 @@ public class StringCryptor {
 
     public static byte[] generateKey( byte[] seed ) throws Exception
     {
-        KeyGenerator keyGenerator = KeyGenerator.getInstance(CIPHER_ALGORITHM);
-        SecureRandom secureRandom = SecureRandom.getInstance(RANDOM_GENERATOR_ALGORITHM);
+        KeyGenerator keyGenerator = KeyGenerator.getInstance( CIPHER_ALGORITHM );
+        SecureRandom secureRandom = SecureRandom.getInstance( RANDOM_GENERATOR_ALGORITHM );
         secureRandom.setSeed( seed );
         keyGenerator.init( RANDOM_KEY_SIZE, secureRandom );
         SecretKey secretKey = keyGenerator.generateKey();

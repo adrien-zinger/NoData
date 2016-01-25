@@ -1,5 +1,7 @@
 package com.android.osloh.nodata.ui.database;
 
+import com.android.osloh.nodata.ui.nodataUtils.StringCryptor;
+
 import java.util.Date;
 
 import io.realm.RealmObject;
