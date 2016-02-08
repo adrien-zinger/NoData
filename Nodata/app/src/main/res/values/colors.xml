@@ -7,7 +7,6 @@
     <color name="color_black">#000000</color>
     <color name="color_transparent">#00000000</color>
 
-
     <!-- conversation -->
     <color name="message_sent">#000000</color>
     <color name="message_received">#000000</color>

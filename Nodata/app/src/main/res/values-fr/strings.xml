@@ -2,4 +2,6 @@
 <resources>
     <string name="message_send">Message envoyé !</string>
     <string name="loading_your_messages">Wait for it…</string>
+    <string name="drawer_item_home">Home</string>
+    <string name="drawer_item_settings">Preferences</string>
 </resources>

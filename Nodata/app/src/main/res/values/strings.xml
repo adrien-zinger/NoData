@@ -10,4 +10,6 @@
     <string name="conversation_head_date">Date : </string>
     <string name="action_deleted">supprimer</string>
     <string name="loading_your_messages">Wait for it…</string>
+    <string name="drawer_item_home">Home</string>
+    <string name="drawer_item_settings">Preferences</string>
 </resources>
