@@ -47,16 +47,12 @@ public class GalleryFragment extends MainFragment implements ConversationSwipeAd
     }
 
     private void displayListView() {
-        Log.d("Gallery NoDa", "Get sms in db");
-        List<ConversationItemBean> smsRealmObjects = new ArrayList<>();// todo replace CacheAccess.getInstance(getActivity()).getFirstOfConversation();
-        ConversationReader convReader = new ConversationReader();
-        convReader.getAllSms(getActivity().getContentResolver());
         Log.d("Gallery NoDa", "Create adapter");
         if (mDataAdapter == null) mDataAdapter = new ConversationSwipeAdapter(getActivity());
         mDataAdapter.setOnItemClickListener(this);
         mConversationList.setAdapter(mDataAdapter);
         mConversationList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mDataAdapter.update(smsRealmObjects);
+        mDataAdapter.update(ConversationReader.getInstance().getAllSms(getActivity().getContentResolver()));
         Log.d("Gallery NoDa", "List displayed");
     }
 

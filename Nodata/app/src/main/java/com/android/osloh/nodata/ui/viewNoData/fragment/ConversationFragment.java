@@ -14,8 +14,6 @@ import com.android.osloh.nodata.ui.bean.MessageItemBean;
 import com.android.osloh.nodata.ui.utils.Filter;
 import com.android.osloh.nodata.ui.utils.SmsReader;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 

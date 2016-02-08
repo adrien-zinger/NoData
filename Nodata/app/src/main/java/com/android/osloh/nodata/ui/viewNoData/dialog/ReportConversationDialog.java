@@ -26,7 +26,7 @@ import butterknife.OnClick;
 public class ReportConversationDialog extends MainDialog {
 
     private ConversationSwipeAdapter mConversationSwipeAdapter;
-    private List<MessageItemBean> mMessages;
+    private List<ConversationItemBean> mMessages;
     private int mPosition;
 
     @Bind(R.id.dialog_report_conversation_manage_date_button)

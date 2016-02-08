@@ -22,7 +22,7 @@ public class ConversationReader {
         return cConversationReader;
     }
 
-    public List getAllSms(ContentResolver contentResolver) {
+    public List<ConversationItemBean> getAllSms(ContentResolver contentResolver) {
         /*
         String[] tableColumns = new String[] {
                 "column1",
@@ -68,7 +68,7 @@ public class ConversationReader {
             if (sms.moveToFirst()) {
                 for (int i = 0; i < totalSMS; i++) {
                     ConversationItemBean conversationItemBean = new ConversationItemBean();
-                    conversationItemBean.setId(sms.getInt(sms.getColumnIndexOrThrow("id")));
+                    conversationItemBean.setId(sms.getInt(sms.getColumnIndexOrThrow("_id")));
                     conversationItemBean.setLastContent(sms.getString(sms.getColumnIndexOrThrow("body")));
                     r.add(conversationItemBean);
                     sms.moveToNext();
