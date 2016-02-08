@@ -1,4 +1,4 @@
-package com.android.osloh.nodata.ui.services;
+package com.android.osloh.nodata.ui.utils.servicesSms;
 
 import android.app.Notification;
 import android.app.NotificationManager;

@@ -5,44 +5,47 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
+ * Classic message
+ *
  * Created by Charles on 10/10/2015.
  */
 public class MessageItemBean {
-    private final SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy-MM-dd/HH/mm", Locale.FRANCE);
 
+    public MessageItemBean(){
+    }
+
+    private boolean sanded;
     private String date;
     private String address;
-    private String content;
-
-    public MessageItemBean(String i, String d, String p){
-        this.address = i;
-        this.date = d;
-        this.content = p;
-    }
+    private String body;
+    private String readState;
 
     public Date getDate() {
         long date = Long.parseLong(this.date);
         return new Date(date);
     }
 
-    public void setDate(String details) {
-        this.date = details;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public void setAdress(String name) {
-        this.address = name.replace("+33", "0");;
+    public void setAddress(String name) {
+        this.address = name;
     }
 
-    public String getContent() {
-        return content;
+    public void setSanded(boolean sanded) {
+        this.sanded = sanded;
     }
 
-    public void setContent(String price) {
-        this.content = price;
+    public void setBody(String body) {
+        this.body = body;
     }
 
+    public void setReadState(String readState) {
+        this.readState = readState;
+    }
 }

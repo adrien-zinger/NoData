@@ -11,7 +11,11 @@ import android.view.MenuItem;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
-import com.android.osloh.nodata.ui.database.DBAccess;
+import com.android.osloh.nodata.ui.utils.SMSReader;
+import com.android.osloh.nodata.ui.utils.servicesSms.Sms;
+import com.android.osloh.nodata.ui.utils.servicesSms.SmsListener;
+import com.android.osloh.nodata.ui.utils.servicesSms.SmsRadar;
+import com.android.osloh.nodata.ui.utils.servicesSms.SmsRadarService;
 import com.android.osloh.nodata.ui.viewNoData.fragment.MainFragment;
 
 import java.text.SimpleDateFormat;
@@ -36,7 +40,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //new DownloadDbTask(this, this).execute();
         back = 0;
-        DBAccess.getInstance(this).update();
+        //DBAccess.getInstance(this).update();
+
+        //GET ALL SMS
+        SMSReader smsReader = new SMSReader();
+        smsReader.getAllSms(getContentResolver());
+        smsReader.getLastWeak(getContentResolver());
         loadFragment(FragmentConstants.Goto.INBOX, new Bundle());
         ButterKnife.bind(this);
     }

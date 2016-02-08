@@ -8,14 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
-import com.android.osloh.nodata.ui.activity.MainActivity;
-import com.android.osloh.nodata.ui.database.SMSRealmObject;
-import com.android.osloh.nodata.ui.viewNoData.dialog.ReportConversationDialog;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.SnackbarManager;
-import com.nispok.snackbar.listeners.ActionClickListener;
-import com.tr4android.recyclerviewslideitem.SwipeAdapter;
-import com.tr4android.recyclerviewslideitem.SwipeConfiguration;
+import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,7 +17,6 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by Adrien on 10/10/2015.

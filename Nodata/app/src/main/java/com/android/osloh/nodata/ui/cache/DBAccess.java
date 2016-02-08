@@ -1,4 +1,4 @@
-package com.android.osloh.nodata.ui.database;
+package com.android.osloh.nodata.ui.cache;
 
 import android.content.Context;
 import android.database.Cursor;

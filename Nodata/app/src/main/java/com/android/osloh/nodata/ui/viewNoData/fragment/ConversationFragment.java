@@ -11,9 +11,9 @@ import android.widget.EditText;
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.adapter.MessageAdapter;
 import com.android.osloh.nodata.ui.bean.MessageItemBean;
-import com.android.osloh.nodata.ui.database.DBAccess;
-import com.android.osloh.nodata.ui.database.SMSRealmObject;
-import com.android.osloh.nodata.ui.nodataUtils.Filter;
+import com.android.osloh.nodata.ui.cache.DBAccess;
+import com.android.osloh.nodata.ui.cache.SMSRealmObject;
+import com.android.osloh.nodata.ui.utils.Filter;
 
 import java.util.ArrayList;
 import java.util.List;

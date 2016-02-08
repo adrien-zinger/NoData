@@ -1,4 +1,4 @@
-package com.android.osloh.nodata.ui.nodataUtils;
+package com.android.osloh.nodata.ui.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;

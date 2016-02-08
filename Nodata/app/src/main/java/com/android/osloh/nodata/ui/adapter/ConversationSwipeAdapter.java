@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
-import com.android.osloh.nodata.ui.database.SMSRealmObject;
+import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 import com.android.osloh.nodata.ui.viewNoData.dialog.ReportConversationDialog;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;

@@ -1,11 +1,10 @@
-package com.android.osloh.nodata.ui.database;
+package com.android.osloh.nodata.ui.cache;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
+
 import com.android.osloh.nodata.ui.activity.MainActivity;
-import com.android.osloh.nodata.ui.constant.FragmentConstants;
 
 /**
  * Created by Charles on 11/11/2015.

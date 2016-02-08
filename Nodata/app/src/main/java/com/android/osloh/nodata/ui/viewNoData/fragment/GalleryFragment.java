@@ -12,8 +12,8 @@ import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
-import com.android.osloh.nodata.ui.database.DBAccess;
-import com.android.osloh.nodata.ui.database.SMSRealmObject;
+import com.android.osloh.nodata.ui.cache.DBAccess;
+import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 
 import java.util.List;
 
