@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
+import com.android.osloh.nodata.ui.bean.ConversationItemBean;
 import com.android.osloh.nodata.ui.bean.MessageItemBean;
 import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 import com.android.osloh.nodata.ui.handler.RecallHandler;
@@ -35,7 +36,7 @@ public class ReportConversationDialog extends MainDialog {
     @Bind(R.id.dialog_report_conversation_add_date_button)
     TextView mAddDateButton;
 
-    public static ReportConversationDialog newInstance(ConversationSwipeAdapter conversationSwipeAdapter, List<MessageItemBean> messages, int position) {
+    public static ReportConversationDialog newInstance(ConversationSwipeAdapter conversationSwipeAdapter, List<ConversationItemBean> messages, int position) {
         ReportConversationDialog reportConversationDialog = new ReportConversationDialog();
         reportConversationDialog.mConversationSwipeAdapter = conversationSwipeAdapter;
         reportConversationDialog.mMessages = messages;

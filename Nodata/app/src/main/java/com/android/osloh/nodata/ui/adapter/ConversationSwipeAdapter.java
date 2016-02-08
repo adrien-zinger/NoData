@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.bean.MessageItemBean;
+import com.android.osloh.nodata.ui.bean.ConversationItemBean;
 import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 import com.android.osloh.nodata.ui.viewNoData.dialog.ReportConversationDialog;
 import com.nispok.snackbar.Snackbar;
@@ -34,11 +35,11 @@ import butterknife.OnClick;
  */
 public class ConversationSwipeAdapter extends SwipeAdapter {
 
-    private List<MessageItemBean> mConversation;
+    private List<ConversationItemBean> mConversation;
     private Context mContext;
 
     public interface OnItemClickListener {
-        void onClick(MessageItemBean conversation);
+        void onClick(ConversationItemBean conversation);
     }
     private OnItemClickListener mOnItemClickListener;
 
@@ -46,7 +47,7 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
         mContext = context;
     }
 
-    public void update(List<MessageItemBean> messages) {
+    public void update(List<ConversationItemBean> messages) {
         mConversation = messages;
         notifyDataSetChanged();
     }
@@ -86,7 +87,7 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
     @Override
     public void onSwipe(final int position, int direction) {
         if (direction == SWIPE_LEFT) {
-            final MessageItemBean messageItemBean = mConversation.remove(position);
+            final ConversationItemBean messageItemBean = mConversation.remove(position);
             notifyItemRemoved(position);
             Snackbar snackbar = Snackbar.with(mContext)
                     .text("Message deleted")
@@ -122,27 +123,19 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
 
         public void configure(int position) {
             mPosition = position;
-            MessageItemBean conversation = mConversation.get(mPosition);
+            ConversationItemBean conversation = mConversation.get(mPosition);
             // Set date todo : create our date format or find good library
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, 0);
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.SECOND, 0);
             c.set(Calendar.MILLISECOND, 0);
-            if (conversation.getDate().before(c.getTime())) {
-                c.setTime(conversation.getDate());
-                SimpleDateFormat format = new SimpleDateFormat("dd MM", Locale.getDefault());
-                date.setText(format.format(conversation.getDate()));
-            } else {
-                c.setTime(conversation.getDate());
-                date.setText(c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE));
-            }
 
             // todo Set content
-            content.setText(conversation.getBody());
+            content.setText(conversation.getLastContent());
 
             // todo Set contact
-            contact.setText(conversation.getAddress());
+           // contact.setText(conversation.getAddress());
         }
 
         @OnClick(R.id.row_gallery_container)

@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mBack = 0;
-        loadFragment(FragmentConstants.Goto.HOME, new Bundle());
+        loadFragment(FragmentConstants.Goto.INBOX, new Bundle());
         ButterKnife.bind(this);
     }
 

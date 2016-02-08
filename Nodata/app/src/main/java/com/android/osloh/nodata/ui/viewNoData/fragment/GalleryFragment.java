@@ -11,10 +11,13 @@ import android.view.ViewGroup;
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
+import com.android.osloh.nodata.ui.bean.ConversationItemBean;
 import com.android.osloh.nodata.ui.bean.MessageItemBean;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
 import com.android.osloh.nodata.ui.cache.CacheAccess;
 import com.android.osloh.nodata.ui.cache.SMSRealmObject;
+import com.android.osloh.nodata.ui.utils.ConversationReader;
+import com.android.osloh.nodata.ui.utils.SmsReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +48,9 @@ public class GalleryFragment extends MainFragment implements ConversationSwipeAd
 
     private void displayListView() {
         Log.d("Gallery NoDa", "Get sms in db");
-        List<MessageItemBean> smsRealmObjects = new ArrayList<>();// todo replace CacheAccess.getInstance(getActivity()).getFirstOfConversation();
+        List<ConversationItemBean> smsRealmObjects = new ArrayList<>();// todo replace CacheAccess.getInstance(getActivity()).getFirstOfConversation();
+        ConversationReader convReader = new ConversationReader();
+        convReader.getAllSms(getActivity().getContentResolver());
         Log.d("Gallery NoDa", "Create adapter");
         if (mDataAdapter == null) mDataAdapter = new ConversationSwipeAdapter(getActivity());
         mDataAdapter.setOnItemClickListener(this);
@@ -61,11 +66,11 @@ public class GalleryFragment extends MainFragment implements ConversationSwipeAd
     }
 
     @Override
-    public void onClick(MessageItemBean conversation) {
+    public void onClick(ConversationItemBean conversation) {
         Bundle bundle = new Bundle();
-        bundle.putString("from", conversation.getAddress());
-        bundle.putString("content", conversation.getBody());
-        bundle.putString("date", conversation.getDate().toString());
+        bundle.putString("from", "");
+        bundle.putString("content", conversation.getLastContent());
+        bundle.putString("date", "");
         ((MainActivity) getActivity()).loadFragment(FragmentConstants.Goto.CONVERSATION, bundle);
     }
 }
