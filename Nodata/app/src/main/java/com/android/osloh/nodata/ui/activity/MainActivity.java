@@ -11,21 +11,14 @@ import android.view.MenuItem;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
-import com.android.osloh.nodata.ui.utils.SmsReader;
 import com.android.osloh.nodata.ui.viewNoData.fragment.MainFragment;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String LANDING_MAIN_TAG = "com.android.osloh.nodata.ui.activity.main.tag";
-    private int back;
-    private final SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy-MM-dd/HH/mm",
-            Locale.FRANCE);
+    private int mBack;
 
     @Bind(R.id.main_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
@@ -34,20 +27,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //new DownloadDbTask(this, this).execute();
-        back = 0;
-        //CacheAccess.getInstance(this).update();
-
-        //GET ALL SMS
-        SmsReader smsReader = new SmsReader();
-        smsReader.getAllSms(getContentResolver());
-        smsReader.getLastWeak(getContentResolver());
-        loadFragment(FragmentConstants.Goto.INBOX, new Bundle());
+        mBack = 0;
+        loadFragment(FragmentConstants.Goto.HOME, new Bundle());
         ButterKnife.bind(this);
     }
 
     public void loadFragment(FragmentConstants.Goto fragment, Bundle bundle) {
-        Log.d("Noda main", "load fragment");
+        Log.d("Noda", "load fragment");
         MainFragment productGalleryFragmentV3 = fragment.getInstance(bundle);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container_for_main_activity,
@@ -57,12 +43,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (back < 2) {
-            back++;
+        if (mBack < 2) {
+            mBack++;
             loadFragment(FragmentConstants.Goto.INBOX, new Bundle());
         } else {
             moveTaskToBack(true);
-            back = 0;
+            mBack = 0;
         }
     }
 
@@ -80,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void showSnackbar(String message) {
         Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
-        // todo on fait ça ou pas pour annuler ?
-        // .setAction(R.string.snackbar_action_undo, clickListener)
     }
 
     @Override

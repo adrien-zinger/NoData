@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.android.osloh.nodata.ui.viewNoData.fragment.ConversationFragment;
 import com.android.osloh.nodata.ui.viewNoData.fragment.GalleryFragment;
+import com.android.osloh.nodata.ui.viewNoData.fragment.HomeFragment;
 import com.android.osloh.nodata.ui.viewNoData.fragment.MainFragment;
 
 /**
@@ -24,7 +25,14 @@ public class FragmentConstants {
             public MainFragment getInstance(Bundle bundle) {
                 return GalleryFragment.newInstance(bundle);
             }
+        },
+        HOME {
+            @Override
+            public MainFragment getInstance(Bundle bundle) {
+                return HomeFragment.newInstance(bundle);
+            }
         };
+
         public abstract MainFragment getInstance(Bundle bundle);
     }
 }

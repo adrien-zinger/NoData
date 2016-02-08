@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_your_messages"
+            android:gravity="center"
+            android:layout_above="@+id/waveLoadingView"
+            android:layout_marginBottom="10dp"
+            />
+
+        <me.itangqi.waveloadingview.WaveLoadingView
+            android:id="@id/waveLoadingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:mlv_borderColor="@color/color_transparent"
+            android:layout_alignParentBottom="true"
+            app:mlv_borderWidth="0dp"
+            app:mlv_progressValue="40"
+            app:mlv_shapeType="square"
+            app:mlv_titleBottomSize="20sp"
+            app:mlv_titleCenterSize="24sp"
+            app:mlv_titleTopSize="20sp"
+            app:mlv_waveAmplitude="60"
+            app:mlv_waveColor="@color/color_loader_grey"
+            />
+</RelativeLayout>
