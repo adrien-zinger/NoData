@@ -6,17 +6,22 @@ import java.util.List;
  * Created by Charles on 08/02/2016.
  */
 public class ConversationItemBean {
-    public ConversationItemBean(){
-    }
-    private int id;
+
     private int nbrUnread;
     private List<Integer> messagesId;
     private String lastContent;
-    public int getId() {
-        return id;
+
+    private List<MessageItemBean> lastMessagesItemBean;
+
+    public ConversationItemBean(){
     }
-    public void setId(int id) {
-        this.id = id;
+
+    public List<MessageItemBean> getLastMessagesItemBean() {
+        return lastMessagesItemBean;
+    }
+
+    public void setLastMessagesItemBean(List<MessageItemBean> lastMessagesItemBean) {
+        this.lastMessagesItemBean = lastMessagesItemBean;
     }
     public int getNbrUnread() {
         return nbrUnread;

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
  * Created by Charles on 08/02/2016.
  */
 public class ConversationReader {
@@ -47,7 +48,7 @@ public class ConversationReader {
                 null,
                 null,
                 null
-        ));
+        ), contentResolver);
     }
 
     public List<ConversationItemBean> getLastWeak(ContentResolver contentResolver) {
@@ -58,22 +59,30 @@ public class ConversationReader {
                 null,
                 null,
                 null
-        ));
+        ), contentResolver);
     }
 
-    private List<ConversationItemBean> manageCursor(Cursor sms) {
+    private List<ConversationItemBean> manageCursor(Cursor sms, ContentResolver contentResolver) {
         List<ConversationItemBean> r = new ArrayList<>();
         if (sms != null) {
             int totalSMS = sms.getCount();
             if (sms.moveToFirst()) {
                 for (int i = 0; i < totalSMS; i++) {
                     ConversationItemBean conversationItemBean = new ConversationItemBean();
-                    conversationItemBean.setId(sms.getInt(sms.getColumnIndexOrThrow("_id")));
                     conversationItemBean.setLastContent(sms.getString(sms.getColumnIndexOrThrow("body")));
+                    String type = sms.getString(sms.getColumnIndex("ct_t"));
+                    if ("application/vnd.wap.multipart.related".equals(type)) {
+                        // todo it's MMS
+                    } else {
+                        conversationItemBean.setLastMessagesItemBean(
+                                SmsReader.getInstance().getMessagesUnRedById(
+                                        contentResolver, sms.getInt(sms.getColumnIndexOrThrow("_id"))));
+                    }
                     r.add(conversationItemBean);
                     sms.moveToNext();
                 }
             }
+            sms.close();
         }
         return r;
     }

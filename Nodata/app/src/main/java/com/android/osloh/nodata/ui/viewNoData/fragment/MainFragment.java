@@ -2,7 +2,11 @@ package com.android.osloh.nodata.ui.viewNoData.fragment;
 
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 
@@ -35,6 +39,25 @@ public class MainFragment extends Fragment {
     }
 
     protected String getTitle() {
-        return "Nodata";
+        return "Noda";
+    }
+
+    public String getContactName(String address) {
+        ContentResolver cr = getActivity().getContentResolver();
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(address));
+        Cursor cursor = cr.query(uri,
+                new String[] { ContactsContract.PhoneLookup.DISPLAY_NAME }, null, null, null);
+        if (cursor == null) {
+            return null;
+        }
+        String contactName = null;
+        if (cursor.moveToFirst()) {
+            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+        }
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return contactName;
     }
 }

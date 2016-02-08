@@ -52,6 +52,37 @@ public class SmsReader {
         ));
     }
 
+    public MessageItemBean getMessageById(ContentResolver contentResolver, int id) {
+        List<MessageItemBean> list = manageCursor(contentResolver.query(
+                Uri.parse("content://sms"),
+                new String[]{"_id, address", "body", "read", "date", "type"},
+                "_id = " + id,
+                null,
+                null
+        ));
+        return (list == null) ? null : list.get(0);
+    }
+
+    public List<MessageItemBean> getMessagesUnRedById(ContentResolver contentResolver, int id) {
+        return manageCursor(contentResolver.query(
+                Uri.parse("content://sms"),
+                new String[]{"_id, address", "body", "read", "date", "type"},
+                "address = (select address from sms where _id = " + id + ") and read <> 1",
+                null,
+                null
+        ));
+    }
+
+    public List<MessageItemBean> getMessagesByAddress(ContentResolver contentResolver, String address) {
+        return manageCursor(contentResolver.query(
+                Uri.parse("content://sms"),
+                new String[]{"_id, address", "body", "read", "date", "type"},
+                "address = " + address,
+                null,
+                null
+        ));
+    }
+
     public List<MessageItemBean> getLastWeak(ContentResolver contentResolver) {
         String whereClause = "date IN (SELECT MAX(date) date FROM sms GROUP BY address)";
         return manageCursor(contentResolver.query(
@@ -79,6 +110,7 @@ public class SmsReader {
                     sms.moveToNext();
                 }
             }
+            sms.close();
         }
         return r;
     }
