@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
+import com.android.osloh.nodata.ui.bean.MessageItemBean;
 import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 
 import java.text.SimpleDateFormat;
@@ -25,7 +26,7 @@ import butterknife.ButterKnife;
  */
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
-    private List<SMSRealmObject> mMessages;
+    private List<MessageItemBean> mMessages;
     private OnItemClickListener mOnItemClickListener;
     private Context mContext;
 
@@ -56,7 +57,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         void onClick(SMSRealmObject conversation);
     }
 
-    public void update(List<SMSRealmObject> messages) {
+    public void update(List<MessageItemBean> messages) {
         mMessages = messages;
         notifyDataSetChanged();
     }
@@ -81,7 +82,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
         public void configure(int position) {
             mPosition = position;
-            SMSRealmObject conversation = mMessages.get(mPosition);
+            MessageItemBean conversation = mMessages.get(mPosition);
             // Set date todo : create our date format or find good library
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, 0);

@@ -11,10 +11,12 @@ import android.view.ViewGroup;
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
+import com.android.osloh.nodata.ui.bean.MessageItemBean;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
-import com.android.osloh.nodata.ui.cache.DBAccess;
+import com.android.osloh.nodata.ui.cache.CacheAccess;
 import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -43,7 +45,7 @@ public class GalleryFragment extends MainFragment implements ConversationSwipeAd
 
     private void displayListView() {
         Log.d("Gallery NoDa", "Get sms in db");
-        List<SMSRealmObject> smsRealmObjects = DBAccess.getInstance(getActivity()).getFirstOfConversation();
+        List<MessageItemBean> smsRealmObjects = new ArrayList<>();// todo replace CacheAccess.getInstance(getActivity()).getFirstOfConversation();
         Log.d("Gallery NoDa", "Create adapter");
         if (mDataAdapter == null) mDataAdapter = new ConversationSwipeAdapter(getActivity());
         mDataAdapter.setOnItemClickListener(this);
@@ -59,9 +61,9 @@ public class GalleryFragment extends MainFragment implements ConversationSwipeAd
     }
 
     @Override
-    public void onClick(SMSRealmObject conversation) {
+    public void onClick(MessageItemBean conversation) {
         Bundle bundle = new Bundle();
-        bundle.putString("from", conversation.getFrom());
+        bundle.putString("from", conversation.getAddress());
         bundle.putString("content", conversation.getBody());
         bundle.putString("date", conversation.getDate().toString());
         ((MainActivity) getActivity()).loadFragment(FragmentConstants.Goto.CONVERSATION, bundle);

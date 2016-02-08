@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
+import com.android.osloh.nodata.ui.bean.MessageItemBean;
 import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 import com.android.osloh.nodata.ui.viewNoData.dialog.ReportConversationDialog;
 import com.nispok.snackbar.Snackbar;
@@ -33,11 +34,11 @@ import butterknife.OnClick;
  */
 public class ConversationSwipeAdapter extends SwipeAdapter {
 
-    private List<SMSRealmObject> mConversation;
+    private List<MessageItemBean> mConversation;
     private Context mContext;
 
-    public static interface OnItemClickListener {
-        void onClick(SMSRealmObject conversation);
+    public interface OnItemClickListener {
+        void onClick(MessageItemBean conversation);
     }
     private OnItemClickListener mOnItemClickListener;
 
@@ -45,7 +46,7 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
         mContext = context;
     }
 
-    public void update(List<SMSRealmObject> messages) {
+    public void update(List<MessageItemBean> messages) {
         mConversation = messages;
         notifyDataSetChanged();
     }
@@ -85,7 +86,7 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
     @Override
     public void onSwipe(final int position, int direction) {
         if (direction == SWIPE_LEFT) {
-            final SMSRealmObject messageItemBean = mConversation.remove(position);
+            final MessageItemBean messageItemBean = mConversation.remove(position);
             notifyItemRemoved(position);
             Snackbar snackbar = Snackbar.with(mContext)
                     .text("Message deleted")
@@ -121,7 +122,7 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
 
         public void configure(int position) {
             mPosition = position;
-            SMSRealmObject conversation = mConversation.get(mPosition);
+            MessageItemBean conversation = mConversation.get(mPosition);
             // Set date todo : create our date format or find good library
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, 0);
@@ -141,7 +142,7 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
             content.setText(conversation.getBody());
 
             // todo Set contact
-            contact.setText(conversation.getFrom());
+            contact.setText(conversation.getAddress());
         }
 
         @OnClick(R.id.row_gallery_container)

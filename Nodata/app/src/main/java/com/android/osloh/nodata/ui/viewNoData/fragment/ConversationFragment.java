@@ -11,16 +11,13 @@ import android.widget.EditText;
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.adapter.MessageAdapter;
 import com.android.osloh.nodata.ui.bean.MessageItemBean;
-import com.android.osloh.nodata.ui.cache.DBAccess;
-import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 import com.android.osloh.nodata.ui.utils.Filter;
+import com.android.osloh.nodata.ui.utils.SmsReader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.RealmResults;
 
 /**
  * Created by Adrien Zinger
@@ -34,9 +31,7 @@ public class ConversationFragment extends MainFragment {
     public RecyclerView mMessage;
 
     private MessageAdapter mMessageAdapter;
-    private RealmResults<SMSRealmObject> mConversationFromDB;
     private String from;
-    private int offset;
 
     private final Filter.Predicate<MessageItemBean> validPersonPredicate = new Filter.Predicate<MessageItemBean>() {
         public boolean apply(MessageItemBean item) {
@@ -56,20 +51,7 @@ public class ConversationFragment extends MainFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_conversation, container, false);
         ButterKnife.bind(this, view);
-        offset = 0;
         return view;
-    }
-
-    private List<SMSRealmObject> getAPeaceOfConversation() {
-        List<SMSRealmObject> r = new ArrayList<>();
-        mConversationFromDB = DBAccess.getInstance(getActivity()).getConversation(from);
-        for (int i = 20 * offset; i < 20 * (offset + 1); ++i) {
-            if (mConversationFromDB.size() <= i) {
-                break;
-            }
-            r.add(mConversationFromDB.get(i));
-        }
-        return r;
     }
 
     @Override
@@ -88,6 +70,6 @@ public class ConversationFragment extends MainFragment {
             mMessage.setLayoutManager(linearLayoutManager);
             mMessage.setAdapter(mMessageAdapter);
         }
-        mMessageAdapter.update(getAPeaceOfConversation());
+        mMessageAdapter.update(SmsReader.getInstance().getLastWeak(getActivity().getContentResolver()));
     }
 }

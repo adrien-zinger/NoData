@@ -1,8 +1,6 @@
 package com.android.osloh.nodata.ui.bean;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Classic message
@@ -14,7 +12,7 @@ public class MessageItemBean {
     public MessageItemBean(){
     }
 
-    private boolean sanded;
+    private boolean sent;
     private String date;
     private String address;
     private String body;
@@ -37,8 +35,8 @@ public class MessageItemBean {
         this.address = name;
     }
 
-    public void setSanded(boolean sanded) {
-        this.sanded = sanded;
+    public void setSent(boolean sent) {
+        this.sent = sent;
     }
 
     public void setBody(String body) {
@@ -47,5 +45,17 @@ public class MessageItemBean {
 
     public void setReadState(String readState) {
         this.readState = readState;
+    }
+
+    public boolean isSent() {
+        return sent;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public String getReadState() {
+        return readState;
     }
 }

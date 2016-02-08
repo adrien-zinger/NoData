@@ -13,7 +13,16 @@ import java.util.List;
  * Return sms
  * Created by ADRIEN on 07/02/2016.
  */
-public class SMSReader {
+public class SmsReader {
+
+    private static SmsReader sSmsReader;
+
+    public static SmsReader getInstance() {
+        if (sSmsReader == null) {
+            sSmsReader = new SmsReader();
+        }
+        return sSmsReader;
+    }
 
     public List getAllSms(ContentResolver contentResolver) {
         /*
@@ -43,7 +52,7 @@ public class SMSReader {
         ));
     }
 
-    public List getLastWeak(ContentResolver contentResolver) {
+    public List<MessageItemBean> getLastWeak(ContentResolver contentResolver) {
         String whereClause = "date IN (SELECT MAX(date) date FROM sms GROUP BY address)";
         return manageCursor(contentResolver.query(
                 Uri.parse("content://sms"),
@@ -54,7 +63,7 @@ public class SMSReader {
         ));
     }
 
-    private List manageCursor(Cursor sms) {
+    private List<MessageItemBean> manageCursor(Cursor sms) {
         List<MessageItemBean> r = new ArrayList<>();
         if (sms != null) {
             int totalSMS = sms.getCount();
@@ -65,7 +74,7 @@ public class SMSReader {
                     messageItemBean.setBody(sms.getString(sms.getColumnIndexOrThrow("body")));
                     messageItemBean.setReadState(sms.getString(sms.getColumnIndex("read")));
                     messageItemBean.setDate(sms.getString(sms.getColumnIndexOrThrow("date")));
-                    messageItemBean.setSanded(!sms.getString(sms.getColumnIndexOrThrow("type")).contains("1"));
+                    messageItemBean.setSent(!sms.getString(sms.getColumnIndexOrThrow("type")).contains("1"));
                     r.add(messageItemBean);
                     sms.moveToNext();
                 }
