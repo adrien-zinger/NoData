@@ -8,19 +8,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
-import com.android.osloh.nodata.ui.activity.MainActivity;
-import com.android.osloh.nodata.ui.bean.MessageItemBean;
 import com.android.osloh.nodata.ui.bean.ConversationItemBean;
-import com.android.osloh.nodata.ui.cache.SMSRealmObject;
-import com.android.osloh.nodata.ui.viewNoData.dialog.ReportConversationDialog;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.SnackbarManager;
-import com.nispok.snackbar.listeners.ActionClickListener;
+import com.android.osloh.nodata.ui.bean.MessageItemBean;
+import com.android.osloh.nodata.ui.utils.ContactReader;
+import com.android.osloh.nodata.ui.utils.DateUtils;
 import com.tr4android.recyclerviewslideitem.SwipeAdapter;
 import com.tr4android.recyclerviewslideitem.SwipeConfiguration;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,21 +33,73 @@ import butterknife.OnClick;
  */
 public class ConversationSwipeAdapter extends SwipeAdapter {
 
-    private List<ConversationItemBean> mConversation;
     private Context mContext;
+
+    private List<ConversationItemBean> mConversations;
 
     public interface OnItemClickListener {
         void onClick(ConversationItemBean conversation);
     }
+
     private OnItemClickListener mOnItemClickListener;
 
     public ConversationSwipeAdapter(Context context) {
         mContext = context;
     }
 
-    public void update(List<ConversationItemBean> messages) {
-        mConversation = messages;
+    public void update(List<ConversationItemBean> conversations) {
+        Collections.sort(conversations, new Comparator<ConversationItemBean>() {
+            @Override
+            public int compare(ConversationItemBean lhs, ConversationItemBean rhs) {
+                // todo fix when mms
+                if (lhs.getLastMessagesItemBean().isEmpty() || rhs.getLastMessagesItemBean().isEmpty()) {
+                    return 0;
+                }
+                Date lhsDate = lhs.getLastMessagesItemBean().get(0).getDate();
+                Date rhsDate = rhs.getLastMessagesItemBean().get(0).getDate();
+                return rhsDate.compareTo(lhsDate);
+            }
+        });
+
+        // Insert the separators
+        conversations.add(0, new ConversationItemBean("today"));
+        boolean yesterday = false;
+        boolean older = false;
+        int pYesterday = 0;
+        int pOlder = 0;
+        for (int i = 1; i < conversations.size(); ++i) {
+            // todo fix for mms
+            if (conversations.get(i).getLastMessagesItemBean().isEmpty()) continue;
+            Date d = conversations.get(i).getLastMessagesItemBean().get(0).getDate();
+            if (!yesterday && !DateUtils.isToday(d)) {
+                pYesterday = i;
+                yesterday = true;
+            }
+            if (yesterday && !older && !DateUtils.isYesterday(d)) {
+                pOlder = i + 1;
+                older = true;
+            }
+        }
+        conversations.add(pYesterday, new ConversationItemBean("yesterday"));
+        conversations.add(pOlder, new ConversationItemBean("older"));
+
+        mConversations = conversations;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateSwipeViewHolder(ViewGroup viewGroup, int position) {
+        return new ConversationHolder(LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.row_gallery, viewGroup, true));
+    }
+
+    @Override
+    public void onBindSwipeViewHolder(RecyclerView.ViewHolder holder, int position) {
+        ((ConversationHolder) holder).configure(position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+        this.mOnItemClickListener = mOnItemClickListener;
     }
 
     @Override
@@ -65,29 +115,9 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateSwipeViewHolder(ViewGroup viewGroup, int i) {
-        return new ConversationHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.row_gallery, viewGroup, true));
-    }
-
-    @Override
-    public void onBindSwipeViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ConversationHolder) holder).configure(position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return (mConversation == null) ? 0 : mConversation.size();
-    }
-
-    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
-        this.mOnItemClickListener = mOnItemClickListener;
-    }
-
-    @Override
     public void onSwipe(final int position, int direction) {
         if (direction == SWIPE_LEFT) {
-            final ConversationItemBean messageItemBean = mConversation.remove(position);
+            /*final ConversationItemBean messageItemBean = mConversation.remove(position);
             notifyItemRemoved(position);
             Snackbar snackbar = Snackbar.with(mContext)
                     .text("Message deleted")
@@ -99,11 +129,16 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
                             notifyItemInserted(position);
                         }
                     });
-            SnackbarManager.show(snackbar);
+            SnackbarManager.show(snackbar);*/
         } else {
-            ReportConversationDialog.newInstance(this, mConversation, position)
-                    .show(((MainActivity) mContext).getFragmentManager(), "aaaaa");
+            /*ReportConversationDialog.newInstance(this, mConversation, position)
+                    .show(((MainActivity) mContext).getFragmentManager(), "aaaaa");*/
         }
+    }
+
+    @Override
+    public int getItemCount() {
+        return (mConversations == null) ? 0 : mConversations.size();
     }
 
     public class ConversationHolder extends RecyclerView.ViewHolder {
@@ -113,6 +148,8 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
         TextView content;
         @Bind(R.id.row_gallery_contact)
         TextView contact;
+        @Bind(R.id.row_contact_name)
+        TextView contactName;
 
         private int mPosition;
 
@@ -123,25 +160,37 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
 
         public void configure(int position) {
             mPosition = position;
-            ConversationItemBean conversation = mConversation.get(mPosition);
-            // Set date todo : create our date format or find good library
-            Calendar c = Calendar.getInstance();
-            c.set(Calendar.HOUR_OF_DAY, 0);
-            c.set(Calendar.MINUTE, 0);
-            c.set(Calendar.SECOND, 0);
-            c.set(Calendar.MILLISECOND, 0);
-
-            // todo Set content
-            content.setText(conversation.getLastContent());
-
+            ConversationItemBean bean = mConversations.get(mPosition);
+            if (bean.getLastMessagesItemBean() != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("kk:mm", Locale.getDefault());
+                MessageItemBean msg = bean.getLastMessagesItemBean().get(0);
+                date.setText(sdf.format(msg.getDate()));
+                content.setText(msg.getBody());
+                String name = ContactReader.getInstance().getContactName(mContext, msg.getAddress());
+                if (name == null || name.isEmpty()) {
+                    name = msg.getAddress();
+                }
+                contactName.setText(name);
+            } else if (bean.getDateSeparator() != null) {
+                if ("today".equals(bean.getDateSeparator())) {
+                    contactName.setText("today");
+                } else if ("yesterday".equals(bean.getDateSeparator())) {
+                    contactName.setText("yesterday");
+                } else {
+                    contactName.setText("older");
+                }
+                content.setText("");
+                date.setText("");
+            }
             // todo Set contact
-           // contact.setText(conversation.getAddress());
+            // contact.setText(conversation.getAddress());
         }
 
         @OnClick(R.id.row_gallery_container)
         public void onClick() {
-            if (mOnItemClickListener != null) mOnItemClickListener.onClick(mConversation.get(mPosition));
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onClick(mConversations.get(mPosition));
+            }
         }
     }
-
 }

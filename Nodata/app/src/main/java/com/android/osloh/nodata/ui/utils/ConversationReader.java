@@ -7,6 +7,8 @@ import android.net.Uri;
 import com.android.osloh.nodata.ui.bean.ConversationItemBean;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,66 +25,64 @@ public class ConversationReader {
         return cConversationReader;
     }
 
-    public List<ConversationItemBean> getAllSms(ContentResolver contentResolver) {
-        /*
-        String[] tableColumns = new String[] {
-                "column1",
-                "(SELECT max(column1) FROM table2) AS max"
-        };
-        String whereClause = "column1 = ? OR column1 = ?";
-        String[] whereArgs = new String[] {
-                "value1",
-                "value2"
-        };
-        String orderBy = "column1";
-        Cursor c = sqLiteDatabase.query("table1", tableColumns, whereClause, whereArgs,
-                null, null, orderBy);
-
-        // since we have a named column we can do
-        int idx = c.getColumnIndex("max");
-        */
-
+    public List<ConversationItemBean> getAllConversation(ContentResolver contentResolver) {
         return manageCursor(contentResolver.query(
                 Uri.parse("content://mms-sms/conversations/"),
-                new String[]{"_id", "body ", "ct_t"},
+                new String[]{"_id", "body ", "ct_t", "thread_id"},
                 null,
                 null,
                 null
         ), contentResolver);
     }
 
-    public List<ConversationItemBean> getLastWeak(ContentResolver contentResolver) {
-        String whereClause = "date IN (SELECT MAX(date) date FROM sms GROUP BY address)";
+    public List<ConversationItemBean> getConversationUnread(ContentResolver contentResolver) {
+        List<ConversationItemBean>  conversations = getAllConversation(contentResolver);
+        List<ConversationItemBean>  r = new ArrayList<>();
+        for (ConversationItemBean conversation : conversations) {
+            if (!conversation.getLastMessagesItemBean().isEmpty()
+                    && !conversation.getLastMessagesItemBean().get(0).getReadState().equals("1")) {
+                r.add(conversation);
+            }
+        }
+        return r;
+    }
+
+    public List<ConversationItemBean> getConversationLastWeak(ContentResolver contentResolver) {
+        Date date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+
         return manageCursor(contentResolver.query(
                 Uri.parse("content://mms-sms/conversations/"),
                 new String[]{"*"},
-                null,
+                "date >= " + cal.getTime().getTime(),
                 null,
                 null
         ), contentResolver);
     }
 
-    private List<ConversationItemBean> manageCursor(Cursor sms, ContentResolver contentResolver) {
+    private List<ConversationItemBean> manageCursor(Cursor smss, ContentResolver contentResolver) {
         List<ConversationItemBean> r = new ArrayList<>();
-        if (sms != null) {
-            int totalSMS = sms.getCount();
-            if (sms.moveToFirst()) {
+        if (smss != null) {
+            int totalSMS = smss.getCount();
+            if (smss.moveToFirst()) {
                 for (int i = 0; i < totalSMS; i++) {
-                    ConversationItemBean conversationItemBean = new ConversationItemBean();
-                    conversationItemBean.setLastContent(sms.getString(sms.getColumnIndexOrThrow("body")));
-                    String type = sms.getString(sms.getColumnIndex("ct_t"));
-                    if ("application/vnd.wap.multipart.related".equals(type)) {
+                    ConversationItemBean bean = new ConversationItemBean();
+                    String type = smss.getString(smss.getColumnIndex("ct_t"));
+                    //if ("application/vnd.wap.multipart.related".equals(type)) {
                         // todo it's MMS
-                    } else {
-                        conversationItemBean.setLastMessagesItemBean(
+                    //} else {
+                        bean.setLastMessagesItemBean(
                                 SmsReader.getInstance().getMessagesUnRedById(
-                                        contentResolver, sms.getInt(sms.getColumnIndexOrThrow("_id"))));
-                    }
-                    r.add(conversationItemBean);
-                    sms.moveToNext();
+                                        contentResolver, smss.getInt(smss.getColumnIndexOrThrow("_id"))));
+                    //}
+                    bean.setThreadId(smss.getString(smss.getColumnIndex("thread_id")));
+                    r.add(bean);
+                    smss.moveToNext();
                 }
             }
-            sms.close();
+            smss.close();
         }
         return r;
     }

@@ -12,15 +12,8 @@ import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
 import com.android.osloh.nodata.ui.bean.ConversationItemBean;
-import com.android.osloh.nodata.ui.bean.MessageItemBean;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
-import com.android.osloh.nodata.ui.cache.CacheAccess;
-import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 import com.android.osloh.nodata.ui.utils.ConversationReader;
-import com.android.osloh.nodata.ui.utils.SmsReader;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,14 +21,14 @@ import butterknife.ButterKnife;
 /**
  *
  */
-public class GalleryFragment extends MainFragment implements ConversationSwipeAdapter.OnItemClickListener {
+public class GalleryFragmentSample extends MainFragment implements ConversationSwipeAdapter.OnItemClickListener {
 
     @Bind(R.id.list_of_conversations)
     RecyclerView mConversationList;
     private ConversationSwipeAdapter mDataAdapter;
 
-    public static GalleryFragment newInstance(@SuppressWarnings("unused") Bundle bundle) {
-        return new GalleryFragment();
+    public static GalleryFragmentSample newInstance(@SuppressWarnings("unused") Bundle bundle) {
+        return new GalleryFragmentSample();
     }
 
     @Override
@@ -52,7 +45,7 @@ public class GalleryFragment extends MainFragment implements ConversationSwipeAd
         mDataAdapter.setOnItemClickListener(this);
         mConversationList.setAdapter(mDataAdapter);
         mConversationList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mDataAdapter.update(ConversationReader.getInstance().getAllSms(getActivity().getContentResolver()));
+        mDataAdapter.update(ConversationReader.getInstance().getAllConversation(getActivity().getContentResolver()));
         Log.d("Gallery NoDa", "List displayed");
     }
 
@@ -65,7 +58,6 @@ public class GalleryFragment extends MainFragment implements ConversationSwipeAd
     public void onClick(ConversationItemBean conversation) {
         Bundle bundle = new Bundle();
         bundle.putString("from", "");
-        bundle.putString("content", conversation.getLastContent());
         bundle.putString("date", "");
         ((MainActivity) getActivity()).loadFragment(FragmentConstants.Goto.CONVERSATION, bundle);
     }

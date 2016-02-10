@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mBack = 0;
-        loadFragment(FragmentConstants.Goto.INBOX, new Bundle());
+        loadFragment(FragmentConstants.Goto.HOME, new Bundle());
         ButterKnife.bind(this);
         initDrawerMenu();
     }
@@ -74,13 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mBack < 2) {
-            mBack++;
-            loadFragment(FragmentConstants.Goto.INBOX, new Bundle());
-        } else {
-            moveTaskToBack(true);
-            mBack = 0;
-        }
+
     }
 
     @Override

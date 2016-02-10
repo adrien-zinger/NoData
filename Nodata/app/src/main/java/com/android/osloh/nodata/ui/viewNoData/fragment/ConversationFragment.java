@@ -11,8 +11,11 @@ import android.widget.EditText;
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.adapter.MessageAdapter;
 import com.android.osloh.nodata.ui.bean.MessageItemBean;
+import com.android.osloh.nodata.ui.constant.ExtraConstants;
+import com.android.osloh.nodata.ui.utils.ContactReader;
 import com.android.osloh.nodata.ui.utils.Filter;
 import com.android.osloh.nodata.ui.utils.SmsReader;
+import com.android.osloh.nodata.ui.viewNoData.utils.DividerItemConversation;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,17 +33,13 @@ public class ConversationFragment extends MainFragment {
 
     private MessageAdapter mMessageAdapter;
     private String from;
-
-    private final Filter.Predicate<MessageItemBean> validPersonPredicate = new Filter.Predicate<MessageItemBean>() {
-        public boolean apply(MessageItemBean item) {
-            return item.getAddress().endsWith(from);
-        }
-    };
+    private String threadId;
 
     public static ConversationFragment newInstance(Bundle bundle) {
         ConversationFragment cf = new ConversationFragment();
         cf.setArguments(bundle);
-        cf.from = bundle.getString("from");
+        cf.from = bundle.getString(ExtraConstants.ADDRESS_ID);
+        cf.threadId = bundle.getString(ExtraConstants.THREAD_ID);
         return cf;
     }
 
@@ -54,7 +53,11 @@ public class ConversationFragment extends MainFragment {
 
     @Override
     protected String getTitle() {
-        return from;
+        String name = ContactReader.getInstance().getContactName(getActivity(), from);
+        if (name == null || name.isEmpty()) {
+            name = from;
+        }
+        return name;
     }
 
     @Override
@@ -64,10 +67,13 @@ public class ConversationFragment extends MainFragment {
             mMessageAdapter = new MessageAdapter(getActivity());
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             linearLayoutManager.setReverseLayout(true);
-            linearLayoutManager.setStackFromEnd(true);
+            linearLayoutManager.setStackFromEnd(false);
             mMessage.setLayoutManager(linearLayoutManager);
             mMessage.setAdapter(mMessageAdapter);
+            mMessage.addItemDecoration(new DividerItemConversation(getActivity(),
+                    DividerItemConversation.VERTICAL_LIST));
         }
-        mMessageAdapter.update(SmsReader.getInstance().getLastWeak(getActivity().getContentResolver()));
+        mMessageAdapter.update(SmsReader.getInstance()
+                .getMessagesByThreadId(getActivity().getContentResolver(), threadId));
     }
 }

@@ -7,6 +7,7 @@ import android.net.Uri;
 import com.android.osloh.nodata.ui.bean.MessageItemBean;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -24,28 +25,11 @@ public class SmsReader {
         return sSmsReader;
     }
 
-    public List getAllSms(ContentResolver contentResolver) {
-        /*
-        String[] tableColumns = new String[] {
-                "column1",
-                "(SELECT max(column1) FROM table2) AS max"
-        };
-        String whereClause = "column1 = ? OR column1 = ?";
-        String[] whereArgs = new String[] {
-                "value1",
-                "value2"
-        };
-        String orderBy = "column1";
-        Cursor c = sqLiteDatabase.query("table1", tableColumns, whereClause, whereArgs,
-                null, null, orderBy);
-
-        // since we have a named column we can do
-        int idx = c.getColumnIndex("max");
-        */
-
+    public List<MessageItemBean> getAllSms(ContentResolver contentResolver) {
         return manageCursor(contentResolver.query(
                 Uri.parse("content://sms"),
-                new String[]{"address", "body", "read", "date", "type"},
+                new String[]{"address", "body", "read", "date", "type", "thread_id"},
+                null,
                 null,
                 null,
                 null
@@ -55,7 +39,7 @@ public class SmsReader {
     public MessageItemBean getMessageById(ContentResolver contentResolver, int id) {
         List<MessageItemBean> list = manageCursor(contentResolver.query(
                 Uri.parse("content://sms"),
-                new String[]{"_id, address", "body", "read", "date", "type"},
+                new String[]{"_id, address", "body", "read", "date", "type", "thread_id"},
                 "_id = " + id,
                 null,
                 null
@@ -66,8 +50,8 @@ public class SmsReader {
     public List<MessageItemBean> getMessagesUnRedById(ContentResolver contentResolver, int id) {
         return manageCursor(contentResolver.query(
                 Uri.parse("content://sms"),
-                new String[]{"_id, address", "body", "read", "date", "type"},
-                "address = (select address from sms where _id = " + id + ") and read <> 1",
+                new String[]{"_id, address", "body", "read", "date", "type", "thread_id"},
+                "address = (select address from sms where _id = " + id + ") and read <> 1 or _id = " + id,
                 null,
                 null
         ));
@@ -76,8 +60,20 @@ public class SmsReader {
     public List<MessageItemBean> getMessagesByAddress(ContentResolver contentResolver, String address) {
         return manageCursor(contentResolver.query(
                 Uri.parse("content://sms"),
-                new String[]{"_id, address", "body", "read", "date", "type"},
+                new String[]{"_id, address", "body", "read", "date", "type", "thread_id"},
                 "address = " + address,
+                null,
+                null
+        ));
+    }
+
+    public List<MessageItemBean> getMessagesByThreadId(ContentResolver contentResolver, String threadId) {
+        Calendar dateLimit = Calendar.getInstance();
+        dateLimit.add(Calendar.DAY_OF_MONTH, -7);
+        return manageCursor(contentResolver.query(
+                Uri.parse("content://sms"),
+                new String[]{"_id, address", "body", "read", "date", "type", "thread_id"},
+                "thread_id = " + threadId + " and date > " + dateLimit.getTime().getTime(),
                 null,
                 null
         ));
@@ -87,7 +83,7 @@ public class SmsReader {
         String whereClause = "date IN (SELECT MAX(date) date FROM sms GROUP BY address)";
         return manageCursor(contentResolver.query(
                 Uri.parse("content://sms"),
-                new String[]{"address", "body", "read", "date", "type"},
+                new String[]{"address", "body", "read", "date", "type", "thread_id"},
                 whereClause,
                 null,
                 null

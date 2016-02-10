@@ -53,7 +53,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         return mMessages.size();
     }
 
-    public static interface OnItemClickListener {
+    public interface OnItemClickListener {
         void onClick(SMSRealmObject conversation);
     }
 
