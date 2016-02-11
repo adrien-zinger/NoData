@@ -16,7 +16,7 @@
 <LinearLayout
     android:id="@+id/row_gallery_message_container"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <TextView

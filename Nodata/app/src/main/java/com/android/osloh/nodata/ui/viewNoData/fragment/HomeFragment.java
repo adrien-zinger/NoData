@@ -22,7 +22,8 @@ import butterknife.ButterKnife;
 
 /**
  * Created by Adrien Zinger
- * Fragment for the conversation
+ * Fragment for the conversation show only the ones who are not marked as ended
+ * and the news.
  */
 public class HomeFragment extends MainFragment implements ConversationSwipeAdapter.OnItemClickListener {
 

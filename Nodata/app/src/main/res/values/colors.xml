@@ -12,4 +12,10 @@
     <color name="message_received">#000000</color>
     <color name="message_date">#000000</color>
     <color name="send_background">#fff4f4f4</color>
+
+    <!-- Theme colors -->
+    <color name="row_color_brown_light">#D7CCC8</color>
+    <color name="row_color_brown_dark">#BCAAA4</color>
+    <color name="row_color_blue_light">#b3e5fc</color>
+    <color name="row_color_blue_dark">#29b6f6</color>
 </resources>

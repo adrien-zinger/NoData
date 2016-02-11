@@ -1,10 +1,15 @@
 package com.android.osloh.nodata.ui.adapter;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +22,7 @@ import com.android.osloh.nodata.ui.utils.DateUtils;
 import com.tr4android.recyclerviewslideitem.SwipeAdapter;
 import com.tr4android.recyclerviewslideitem.SwipeConfiguration;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,6 +41,7 @@ import butterknife.OnClick;
  */
 public class ConversationSwipeAdapter extends SwipeAdapter {
 
+    SimpleDateFormat sdf = new SimpleDateFormat("kk:mm", Locale.getDefault());
     private Context mContext;
 
     private List<ConversationItemBean> mConversations;
@@ -143,6 +150,11 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
         return (mConversations == null) ? 0 : mConversations.size();
     }
 
+
+    private static final Rect bounds = new Rect();
+    private static final Paint paint = new Paint();
+
+    int width = (int) Math.ceil( bounds.width());
     public class ConversationHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.row_gallery_date_separator)
         TextView dateSeparator;
@@ -170,9 +182,16 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
             mPosition = position;
             ConversationItemBean bean = mConversations.get(mPosition);
             if (bean.getLastMessagesItemBean() != null) {
-                rowMessageContainer.setVisibility(View.VISIBLE);
-                dateSeparator.setVisibility(View.GONE);
-                SimpleDateFormat sdf = new SimpleDateFormat("kk:mm", Locale.getDefault());
+                configureMessageRow(bean);
+            } else if (bean.getDateSeparator() != null) {
+                configureDateSeparator(bean);
+            }
+        }
+
+        private void configureMessageRow(ConversationItemBean bean) {
+            rowMessageContainer.setVisibility(View.VISIBLE);
+            dateSeparator.setVisibility(View.GONE);
+            if (!bean.getLastMessagesItemBean().isEmpty()) {
                 MessageItemBean msg = bean.getLastMessagesItemBean().get(0);
                 date.setText(sdf.format(msg.getDate()));
                 content.setText(msg.getBody());
@@ -181,25 +200,37 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
                     name = msg.getAddress();
                 }
                 contactName.setText(name);
-                setColor(R.color.background_material_light, rowContainer);
-            } else if (bean.getDateSeparator() != null) {
-                rowMessageContainer.setVisibility(View.GONE);
-                dateSeparator.setVisibility(View.VISIBLE);
-                if ("today".equals(bean.getDateSeparator())) {
-                    dateSeparator.setText(contactName.getResources().getString(R.string.today));
-                } else if ("yesterday".equals(bean.getDateSeparator())) {
-                    dateSeparator.setText(contactName.getResources().getString(R.string.yesterday));
+                rowContainer.setBackgroundResource(0);
+
+                // Init height
+                int minimumHeight = (int) rowContainer.getContext().getResources()
+                        .getDimension(R.dimen.row_conversation_minimum_height);
+
+                // todo test size with the size of the screen
+                //paint.setTextSize(msg.getBody().get);
+                //paint.getTextBounds(testString, 0, testString.length(), bounds);
+
+                if (msg.getBody().length() < 80) {
+                    rowContainer.getLayoutParams().height = minimumHeight;
                 } else {
-                    dateSeparator.setText(contactName.getResources().getString(R.string.older));
+                    rowContainer.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 }
-                setColor(R.color.color_loader_grey, rowContainer);
             }
-            // todo Set contact
-            // contact.setText(conversation.getAddress());
         }
 
-        private void setColor(int colorId, View view) {
-            view.setBackgroundColor(view.getContext().getResources().getColor(colorId));
+        private void configureDateSeparator(ConversationItemBean bean) {
+            rowMessageContainer.setVisibility(View.GONE);
+            dateSeparator.setVisibility(View.VISIBLE);
+            // todo the test could be greater
+            if ("today".equals(bean.getDateSeparator())) {
+                dateSeparator.setText(contactName.getResources().getString(R.string.today));
+            } else if ("yesterday".equals(bean.getDateSeparator())) {
+                dateSeparator.setText(contactName.getResources().getString(R.string.yesterday));
+            } else {
+                dateSeparator.setText(contactName.getResources().getString(R.string.older));
+            }
+            rowContainer.setBackgroundResource(R.drawable.gradient_shape);
+            rowContainer.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
         }
 
         @OnClick(R.id.row_gallery_container)

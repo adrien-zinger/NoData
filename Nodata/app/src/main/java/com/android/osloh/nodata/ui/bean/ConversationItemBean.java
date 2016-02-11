@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class ConversationItemBean {
 
+    private String id;
     private List<MessageItemBean> lastMessagesItemBean;
     private String dateSeparator;
     private String threadId;
@@ -45,5 +46,13 @@ public class ConversationItemBean {
 
     public String getThreadId() {
         return threadId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -19,7 +19,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- *
+ * Show every conversations in the phone (ended or not)
  */
 public class GalleryFragmentSample extends MainFragment implements ConversationSwipeAdapter.OnItemClickListener {
 
