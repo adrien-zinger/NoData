@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.main_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
+    @Bind(R.id.toolbar)
+    public Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +39,14 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(FragmentConstants.Goto.HOME, new Bundle());
         ButterKnife.bind(this);
         initDrawerMenu();
+        initToolbar();
     }
 
-    public void initDrawerMenu() {
+    private void initToolbar() {
+        setSupportActionBar(toolbar);
+    }
+
+    private void initDrawerMenu() {
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(R.string.drawer_item_home);
         SecondaryDrawerItem item2 = new SecondaryDrawerItem().withName(R.string.drawer_item_settings);
         new DrawerBuilder()

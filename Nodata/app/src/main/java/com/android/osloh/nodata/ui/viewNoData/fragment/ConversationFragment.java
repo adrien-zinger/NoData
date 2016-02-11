@@ -1,12 +1,14 @@
 package com.android.osloh.nodata.ui.viewNoData.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toolbar;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.adapter.MessageAdapter;
