@@ -1,13 +1,11 @@
 package com.android.osloh.nodata.ui.viewNoData.fragment;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 
 import com.android.osloh.nodata.ui.activity.MainActivity;
@@ -30,12 +28,12 @@ public class MainFragment extends Fragment {
 
     public void loadFragment(FragmentConstants.Goto fragment) {
         ((MainActivity) getActivity())
-                .loadFragment(fragment, new Bundle());
+                .addFragment(fragment, new Bundle());
     }
 
     public void loadFragment(FragmentConstants.Goto fragment, Bundle bundle) {
         ((MainActivity) getActivity())
-                .loadFragment(fragment, bundle);
+                .addFragment(fragment, bundle);
     }
 
     protected String getTitle() {

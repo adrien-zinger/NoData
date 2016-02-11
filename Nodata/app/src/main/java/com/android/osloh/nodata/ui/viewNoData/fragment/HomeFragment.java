@@ -73,6 +73,6 @@ public class HomeFragment extends MainFragment implements ConversationSwipeAdapt
         Bundle bundle = new Bundle();
         bundle.putString(ExtraConstants.ADDRESS_ID, bean.getLastMessagesItemBean().get(0).getAddress());
         bundle.putString(ExtraConstants.THREAD_ID, bean.getThreadId());
-        ((MainActivity) getActivity()).loadFragment(FragmentConstants.Goto.CONVERSATION, bundle);
+        ((MainActivity) getActivity()).addFragment(FragmentConstants.Goto.CONVERSATION, bundle);
     }
 }

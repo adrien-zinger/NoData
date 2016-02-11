@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
@@ -110,7 +112,7 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
                 .setLeftUndoDescription(R.string.action_deleted)
                 .setDescriptionTextColorResource(android.R.color.white)
                 .setLeftSwipeBehaviour(SwipeConfiguration.SwipeBehaviour.NORMAL_SWIPE)
-                .setRightSwipeBehaviour(SwipeConfiguration.SwipeBehaviour.NORMAL_SWIPE)
+                .setRightSwipeBehaviour(SwipeConfiguration.SwipeBehaviour.NO_SWIPE)
                 .build();
     }
 
@@ -142,6 +144,8 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
     }
 
     public class ConversationHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.row_gallery_date_separator)
+        TextView dateSeparator;
         @Bind(R.id.row_gallery_date)
         TextView date;
         @Bind(R.id.row_gallery_content)
@@ -150,6 +154,10 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
         TextView contact;
         @Bind(R.id.row_contact_name)
         TextView contactName;
+        @Bind(R.id.row_gallery_message_container)
+        LinearLayout rowMessageContainer;
+        @Bind(R.id.row_gallery_container)
+        RelativeLayout rowContainer;
 
         private int mPosition;
 
@@ -162,6 +170,8 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
             mPosition = position;
             ConversationItemBean bean = mConversations.get(mPosition);
             if (bean.getLastMessagesItemBean() != null) {
+                rowMessageContainer.setVisibility(View.VISIBLE);
+                dateSeparator.setVisibility(View.GONE);
                 SimpleDateFormat sdf = new SimpleDateFormat("kk:mm", Locale.getDefault());
                 MessageItemBean msg = bean.getLastMessagesItemBean().get(0);
                 date.setText(sdf.format(msg.getDate()));
@@ -171,19 +181,25 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
                     name = msg.getAddress();
                 }
                 contactName.setText(name);
+                setColor(R.color.background_material_light, rowContainer);
             } else if (bean.getDateSeparator() != null) {
+                rowMessageContainer.setVisibility(View.GONE);
+                dateSeparator.setVisibility(View.VISIBLE);
                 if ("today".equals(bean.getDateSeparator())) {
-                    contactName.setText("today");
+                    dateSeparator.setText(contactName.getResources().getString(R.string.today));
                 } else if ("yesterday".equals(bean.getDateSeparator())) {
-                    contactName.setText("yesterday");
+                    dateSeparator.setText(contactName.getResources().getString(R.string.yesterday));
                 } else {
-                    contactName.setText("older");
+                    dateSeparator.setText(contactName.getResources().getString(R.string.older));
                 }
-                content.setText("");
-                date.setText("");
+                setColor(R.color.color_loader_grey, rowContainer);
             }
             // todo Set contact
             // contact.setText(conversation.getAddress());
+        }
+
+        private void setColor(int colorId, View view) {
+            view.setBackgroundColor(view.getContext().getResources().getColor(colorId));
         }
 
         @OnClick(R.id.row_gallery_container)

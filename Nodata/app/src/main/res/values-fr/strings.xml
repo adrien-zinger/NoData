@@ -4,4 +4,7 @@
     <string name="loading_your_messages">Wait for it…</string>
     <string name="drawer_item_home">Home</string>
     <string name="drawer_item_settings">Preferences</string>
+    <string name="today">Aujourd\'hui</string>
+    <string name="yesterday">Hier</string>
+    <string name="older">Plus ancien</string>
 </resources>

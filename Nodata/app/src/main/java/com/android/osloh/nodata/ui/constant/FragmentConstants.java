@@ -12,11 +12,19 @@ import com.android.osloh.nodata.ui.viewNoData.fragment.MainFragment;
  */
 public class FragmentConstants {
 
+    public final static String HOME_ID = "homeId";
+    public final static String CONVERSATION_ID = "conversationId";
+
     public enum Goto {
         CONVERSATION {
             @Override
             public MainFragment getInstance(Bundle bundle) {
                 return ConversationFragment.newInstance(bundle);
+            }
+
+            @Override
+            public String getId() {
+                return CONVERSATION_ID;
             }
         },
         HOME {
@@ -24,8 +32,14 @@ public class FragmentConstants {
             public MainFragment getInstance(Bundle bundle) {
                 return HomeFragment.newInstance(bundle);
             }
+
+            @Override
+            public String getId() {
+                return HOME_ID;
+            }
         };
 
         public abstract MainFragment getInstance(Bundle bundle);
+        public abstract String getId();
     }
 }

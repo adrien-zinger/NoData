@@ -25,7 +25,6 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int mBack;
 
     @Bind(R.id.main_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
@@ -34,8 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mBack = 0;
-        loadFragment(FragmentConstants.Goto.HOME, new Bundle());
+        replaceFragment(FragmentConstants.Goto.HOME, new Bundle());
         ButterKnife.bind(this);
         initDrawerMenu();
     }
@@ -62,18 +60,30 @@ public class MainActivity extends AppCompatActivity {
                 .build();
     }
 
-    public void loadFragment(FragmentConstants.Goto fragment, Bundle bundle) {
+    public void addFragment(FragmentConstants.Goto fragment, Bundle bundle) {
         Log.d("Noda", "load fragment");
-        MainFragment productGalleryFragmentV3 = fragment.getInstance(bundle);
+        MainFragment instance = fragment.getInstance(bundle);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fragment_container_for_main_activity,
+                instance, "com.android.osloh.nodata.ui.activity.main.tag");
+        fragmentTransaction.addToBackStack(fragment.getId()).commit();
+    }
+
+    public void replaceFragment(FragmentConstants.Goto fragment, Bundle bundle) {
+        MainFragment instance = fragment.getInstance(bundle);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container_for_main_activity,
-                productGalleryFragmentV3, "com.android.osloh.nodata.ui.activity.main.tag");
-        fragmentTransaction.commit();
+                instance, "com.android.osloh.nodata.ui.activity.main.tag");
+        fragmentTransaction.addToBackStack(fragment.getId()).commit();
     }
 
     @Override
     public void onBackPressed() {
-
+        if (getFragmentManager().getBackStackEntryCount() > 1) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

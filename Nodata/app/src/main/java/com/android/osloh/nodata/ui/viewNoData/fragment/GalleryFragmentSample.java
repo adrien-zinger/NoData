@@ -59,6 +59,6 @@ public class GalleryFragmentSample extends MainFragment implements ConversationS
         Bundle bundle = new Bundle();
         bundle.putString("from", "");
         bundle.putString("date", "");
-        ((MainActivity) getActivity()).loadFragment(FragmentConstants.Goto.CONVERSATION, bundle);
+        ((MainActivity) getActivity()).addFragment(FragmentConstants.Goto.CONVERSATION, bundle);
     }
 }

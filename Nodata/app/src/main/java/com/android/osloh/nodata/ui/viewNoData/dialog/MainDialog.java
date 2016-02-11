@@ -44,11 +44,11 @@ public class MainDialog extends DialogFragment {
 
     public void loadFragment(FragmentConstants.Goto fragment) {
         ((MainActivity) getActivity())
-                .loadFragment(fragment, new Bundle());
+                .addFragment(fragment, new Bundle());
     }
 
     public void loadFragment(FragmentConstants.Goto fragment, Bundle bundle) {
         ((MainActivity) getActivity())
-                .loadFragment(fragment, bundle);
+                .addFragment(fragment, bundle);
     }
 }
