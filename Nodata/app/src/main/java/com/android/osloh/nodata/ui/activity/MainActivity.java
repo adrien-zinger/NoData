@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        replaceFragment(FragmentConstants.Goto.HOME, new Bundle());
+        replaceFragment(FragmentConstants.Goto.HOME_GALLERY, new Bundle());
         ButterKnife.bind(this);
         initDrawerMenu();
         initToolbar();
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initToolbar() {
         setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.color_white));
     }
 
     private void initDrawerMenu() {

@@ -25,24 +25,13 @@ import butterknife.ButterKnife;
  * Fragment for the conversation show only the ones who are not marked as ended
  * and the news.
  */
-public class HomeFragment extends MainFragment implements ConversationSwipeAdapter.OnItemClickListener {
+public class HomeGalleryFragment extends GalleryFragmentParent {
 
-    @Bind(R.id.list_of_conversations)
-    RecyclerView mConversationList;
-    private ConversationSwipeAdapter mDataAdapter;
-
-    public static HomeFragment newInstance(@SuppressWarnings("unused") Bundle bundle) {
-        return new HomeFragment();
+    public static HomeGalleryFragment newInstance(Bundle bundle) {
+        return new HomeGalleryFragment();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
-        ButterKnife.bind(this, view);
-        return (container == null) ? null : view;
-    }
-
-    private void displayListView() {
+    protected void displayListView() {
         Log.d("Gallery NoDa", "Create adapter");
         if (mDataAdapter == null) {
             mDataAdapter = new ConversationSwipeAdapter(getActivity());
@@ -53,27 +42,5 @@ public class HomeFragment extends MainFragment implements ConversationSwipeAdapt
         mDataAdapter.setOnItemClickListener(this);
         mDataAdapter.update(ConversationReader.getInstance().getAllConversation(getActivity().getContentResolver()));
         Log.d("Gallery NoDa", "List displayed");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        displayListView();
-    }
-
-    @Override
-    protected String getTitle() {
-        return "noda";
-    }
-
-    @Override
-    public void onClick(ConversationItemBean bean) {
-        if (bean.getLastMessagesItemBean() == null || bean.getLastMessagesItemBean().isEmpty()) {
-            return;
-        }
-        Bundle bundle = new Bundle();
-        bundle.putString(ExtraConstants.ADDRESS_ID, bean.getLastMessagesItemBean().get(0).getAddress());
-        bundle.putString(ExtraConstants.THREAD_ID, bean.getThreadId());
-        ((MainActivity) getActivity()).addFragment(FragmentConstants.Goto.CONVERSATION, bundle);
     }
 }

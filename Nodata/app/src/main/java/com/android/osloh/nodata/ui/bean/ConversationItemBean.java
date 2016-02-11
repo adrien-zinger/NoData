@@ -2,33 +2,34 @@ package com.android.osloh.nodata.ui.bean;
 
 import java.util.List;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+
 /**
  *
  * Created by Charles on 08/02/2016.
  */
-public class ConversationItemBean {
+public class ConversationItemBean extends RealmObject {
 
     private String id;
-    private List<MessageItemBean> lastMessagesItemBean;
     private String dateSeparator;
     private String threadId;
 
-    public ConversationItemBean(){
-    }
+    private RealmList<MessageItemBean> lastMessagesItemBean;
 
-    public ConversationItemBean(List<MessageItemBean> lastMessagesItemBean) {
-        this.lastMessagesItemBean = lastMessagesItemBean;
+    public ConversationItemBean(){
     }
 
     public ConversationItemBean(String dateSeparator){
         this.dateSeparator = dateSeparator;
     }
 
-    public List<MessageItemBean> getLastMessagesItemBean() {
+    public RealmList<MessageItemBean> getLastMessagesItemBean() {
         return lastMessagesItemBean;
     }
 
-    public void setLastMessagesItemBean(List<MessageItemBean> lastMessagesItemBean) {
+    public void setLastMessagesItemBean(RealmList<MessageItemBean> lastMessagesItemBean) {
         this.lastMessagesItemBean = lastMessagesItemBean;
     }
 

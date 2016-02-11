@@ -25,7 +25,7 @@ public class SplashScreenActivity extends Activity {
                     e.printStackTrace();
                 } finally {
                     Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-                    intent.putExtra("fragment", FragmentConstants.Goto.HOME);
+                    intent.putExtra("fragment", FragmentConstants.Goto.HOME_GALLERY);
                     startActivity(intent);
                     finish();
                 }

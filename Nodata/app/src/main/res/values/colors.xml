@@ -4,6 +4,7 @@
     <color name="color_mark">#ff5100</color>
     <color name="color_white">#ffffff</color>
     <color name="color_loader_grey">#c4c4c4</color>
+    <color name="color_grey">#a1a1a1</color>
     <color name="color_black">#000000</color>
     <color name="color_transparent">#00000000</color>
 

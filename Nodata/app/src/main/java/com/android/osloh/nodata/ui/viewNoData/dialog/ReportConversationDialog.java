@@ -10,8 +10,6 @@ import android.widget.TextView;
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
 import com.android.osloh.nodata.ui.bean.ConversationItemBean;
-import com.android.osloh.nodata.ui.bean.MessageItemBean;
-import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 import com.android.osloh.nodata.ui.handler.RecallHandler;
 
 import java.util.List;

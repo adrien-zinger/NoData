@@ -9,10 +9,10 @@ import android.widget.TextView;
 
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.bean.MessageItemBean;
-import com.android.osloh.nodata.ui.cache.SMSRealmObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,7 +54,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     }
 
     public interface OnItemClickListener {
-        void onClick(SMSRealmObject conversation);
+        void onClick();
     }
 
     public void update(List<MessageItemBean> messages) {
@@ -82,24 +82,29 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
         public void configure(int position) {
             mPosition = position;
-            MessageItemBean conversation = mMessages.get(mPosition);
+            MessageItemBean bean = mMessages.get(mPosition);
             // Set date todo : create our date format or find good library
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, 0);
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.SECOND, 0);
             c.set(Calendar.MILLISECOND, 0);
-            if (conversation.getDate().before(c.getTime())) {
-                c.setTime(conversation.getDate());
-                SimpleDateFormat format = new SimpleDateFormat("dd MM", Locale.getDefault());
-                date.setText(format.format(conversation.getDate()));
+            Date date = getParseDate(bean);
+            if (date.before(c.getTime())) {
+                c.setTime(date);
+                SimpleDateFormat format = new SimpleDateFormat("kk MM", Locale.getDefault());
+                this.date.setText(format.format(date));
             } else {
-                c.setTime(conversation.getDate());
-                date.setText(c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE));
+                c.setTime(date);
+                this.date.setText(c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE));
             }
 
             // todo Set content
-            content.setText(conversation.getBody());
+            content.setText(bean.getBody());
+        }
+
+        private Date getParseDate(MessageItemBean bean) {
+            return new Date(Long.parseLong(bean.getDate()));
         }
     }
 }

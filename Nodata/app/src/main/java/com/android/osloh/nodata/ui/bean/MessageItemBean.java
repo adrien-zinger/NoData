@@ -1,13 +1,17 @@
 package com.android.osloh.nodata.ui.bean;
 
+
 import java.util.Date;
+
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 
 /**
  * Classic message
  *
  * Created by Charles on 10/10/2015.
  */
-public class MessageItemBean {
+public class MessageItemBean extends RealmObject {
 
     public MessageItemBean(){
     }
@@ -18,10 +22,14 @@ public class MessageItemBean {
     private String body;
     private String readState;
 
-    public Date getDate() {
-        long date = Long.parseLong(this.date);
-        return new Date(date);
+    public String getDate() {
+        return date;
     }
+
+//    public Date getDateParse() {
+//        long date = Long.parseLong(this.date);
+//        return new Date(date);
+//    }
 
     public void setDate(String date) {
         this.date = date;

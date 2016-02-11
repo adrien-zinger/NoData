@@ -12,8 +12,10 @@ import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
 import com.android.osloh.nodata.ui.bean.ConversationItemBean;
+import com.android.osloh.nodata.ui.constant.ExtraConstants;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
 import com.android.osloh.nodata.ui.utils.ConversationReader;
+import com.android.osloh.nodata.ui.viewNoData.utils.DividerItemConversation;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -21,32 +23,25 @@ import butterknife.ButterKnife;
 /**
  * Show every conversations in the phone (ended or not)
  */
-public class GalleryFragmentSample extends MainFragment implements ConversationSwipeAdapter.OnItemClickListener {
+public abstract class GalleryFragmentParent extends MainFragment implements ConversationSwipeAdapter.OnItemClickListener {
 
     @Bind(R.id.list_of_conversations)
     RecyclerView mConversationList;
-    private ConversationSwipeAdapter mDataAdapter;
-
-    public static GalleryFragmentSample newInstance(@SuppressWarnings("unused") Bundle bundle) {
-        return new GalleryFragmentSample();
-    }
+    protected ConversationSwipeAdapter mDataAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         ButterKnife.bind(this, view);
-        displayListView();
         return (container == null) ? null : view;
     }
 
-    private void displayListView() {
-        Log.d("Gallery NoDa", "Create adapter");
-        if (mDataAdapter == null) mDataAdapter = new ConversationSwipeAdapter(getActivity());
-        mDataAdapter.setOnItemClickListener(this);
-        mConversationList.setAdapter(mDataAdapter);
-        mConversationList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mDataAdapter.update(ConversationReader.getInstance().getAllConversation(getActivity().getContentResolver()));
-        Log.d("Gallery NoDa", "List displayed");
+    abstract protected void displayListView();
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        displayListView();
     }
 
     @Override
@@ -55,10 +50,13 @@ public class GalleryFragmentSample extends MainFragment implements ConversationS
     }
 
     @Override
-    public void onClick(ConversationItemBean conversation) {
+    public void onClick(ConversationItemBean bean) {
+        if (bean.getLastMessagesItemBean() == null || bean.getLastMessagesItemBean().isEmpty()) {
+            return;
+        }
         Bundle bundle = new Bundle();
-        bundle.putString("from", "");
-        bundle.putString("date", "");
+        bundle.putString(ExtraConstants.ADDRESS_ID, bean.getLastMessagesItemBean().get(0).getAddress());
+        bundle.putString(ExtraConstants.THREAD_ID, bean.getThreadId());
         ((MainActivity) getActivity()).addFragment(FragmentConstants.Goto.CONVERSATION, bundle);
     }
 }

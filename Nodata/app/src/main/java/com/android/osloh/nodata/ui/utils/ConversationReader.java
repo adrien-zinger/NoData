@@ -5,11 +5,15 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import com.android.osloh.nodata.ui.bean.ConversationItemBean;
+import com.android.osloh.nodata.ui.bean.MessageItemBean;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
+import io.realm.RealmList;
 
 /**
  *
@@ -73,9 +77,10 @@ public class ConversationReader {
                     //if ("application/vnd.wap.multipart.related".equals(type)) {
                         // todo it's MMS
                     //} else {
-                        bean.setLastMessagesItemBean(
-                                SmsReader.getInstance().getMessagesUnRedById(
-                                        contentResolver, smss.getInt(smss.getColumnIndexOrThrow("_id"))));
+                    RealmList<MessageItemBean> list = new RealmList<>();
+                    list.addAll(SmsReader.getInstance().getMessagesUnRedById(
+                            contentResolver, smss.getInt(smss.getColumnIndexOrThrow("_id"))));
+                        bean.setLastMessagesItemBean(list);
                     //}
                     bean.setThreadId(smss.getString(smss.getColumnIndex("thread_id")));
                     r.add(bean);
