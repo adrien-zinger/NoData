@@ -12,10 +12,17 @@ import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.activity.MainActivity;
 import com.android.osloh.nodata.ui.adapter.ConversationSwipeAdapter;
 import com.android.osloh.nodata.ui.bean.ConversationItemBean;
+import com.android.osloh.nodata.ui.cache.MessageAndConversationAccess;
 import com.android.osloh.nodata.ui.constant.ExtraConstants;
 import com.android.osloh.nodata.ui.constant.FragmentConstants;
 import com.android.osloh.nodata.ui.utils.ConversationReader;
+import com.android.osloh.nodata.ui.utils.IPredicate;
+import com.android.osloh.nodata.ui.utils.Predicate;
 import com.android.osloh.nodata.ui.viewNoData.utils.DividerItemConversation;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -40,7 +47,18 @@ public class HomeGalleryFragment extends GalleryFragmentParent {
             mConversationList.addItemDecoration(new DividerItemConversation(getActivity(), DividerItemConversation.VERTICAL_LIST));
         }
         mDataAdapter.setOnItemClickListener(this);
-        mDataAdapter.update(ConversationReader.getInstance().getAllConversation(getActivity().getContentResolver()));
+        Collection<ConversationItemBean> conversations = ConversationReader.getInstance()
+                .getAllConversation(getActivity().getContentResolver());
+        final Collection<Integer> terminateIds = MessageAndConversationAccess.getInstance()
+                .getTerminateConversations(mConversationList.getContext());
+        conversations = Predicate.filter(conversations, new IPredicate<ConversationItemBean>() {
+            @Override
+            public boolean apply(ConversationItemBean type) {
+                return !terminateIds.contains(type.getId());
+            }
+        });
+        List<ConversationItemBean> conversationItemBeanList = new ArrayList<>(conversations);
+        mDataAdapter.update(conversationItemBeanList);
         Log.d("Gallery NoDa", "List displayed");
     }
 }

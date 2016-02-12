@@ -4,7 +4,7 @@ import java.util.List;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 
 /**
  *
@@ -12,13 +12,24 @@ import io.realm.annotations.Ignore;
  */
 public class ConversationItemBean extends RealmObject {
 
-    private String id;
+    @PrimaryKey
+    private int id;
     private String dateSeparator;
     private String threadId;
+    private boolean terminate;
 
     private RealmList<MessageItemBean> lastMessagesItemBean;
 
     public ConversationItemBean(){
+        terminate = false;
+    }
+
+    public boolean getTerminate() {
+        return terminate;
+    }
+
+    public void setTerminate(boolean terminate) {
+        this.terminate = terminate;
     }
 
     public ConversationItemBean(String dateSeparator){
@@ -49,11 +60,11 @@ public class ConversationItemBean extends RealmObject {
         return threadId;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

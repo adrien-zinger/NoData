@@ -12,8 +12,12 @@ import android.widget.TextView;
 import com.android.osloh.nodata.R;
 import com.android.osloh.nodata.ui.bean.ConversationItemBean;
 import com.android.osloh.nodata.ui.bean.MessageItemBean;
+import com.android.osloh.nodata.ui.cache.MessageAndConversationAccess;
 import com.android.osloh.nodata.ui.utils.ContactReader;
 import com.android.osloh.nodata.ui.utils.DateUtils;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.listeners.ActionClickListener;
 import com.tr4android.recyclerviewslideitem.SwipeAdapter;
 import com.tr4android.recyclerviewslideitem.SwipeConfiguration;
 
@@ -27,6 +31,7 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
 
 /**
  * Created by Adrien on 10/10/2015.
@@ -119,7 +124,7 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
     @Override
     public void onSwipe(final int position, int direction) {
         if (direction == SWIPE_LEFT) {
-            /*final ConversationItemBean messageItemBean = mConversation.remove(position);
+            final ConversationItemBean bean = mConversations.remove(position);
             notifyItemRemoved(position);
             Snackbar snackbar = Snackbar.with(mContext)
                     .text("Message deleted")
@@ -127,14 +132,12 @@ public class ConversationSwipeAdapter extends SwipeAdapter {
                     .actionListener(new ActionClickListener() {
                         @Override
                         public void onActionClicked(Snackbar snackbar) {
-                            mConversation.add(position, messageItemBean);
+                            mConversations.add(position, bean);
                             notifyItemInserted(position);
                         }
                     });
-            SnackbarManager.show(snackbar);*/
-        } else {
-            /*ReportConversationDialog.newInstance(this, mConversation, position)
-                    .show(((MainActivity) mContext).getFragmentManager(), "aaaaa");*/
+            MessageAndConversationAccess.getInstance().terminateConversation(bean, Realm.getInstance(mContext));
+            SnackbarManager.show(snackbar);
         }
     }
 

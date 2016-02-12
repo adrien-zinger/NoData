@@ -77,9 +77,10 @@ public class ConversationReader {
                     //if ("application/vnd.wap.multipart.related".equals(type)) {
                         // todo it's MMS
                     //} else {
+                    int id = smss.getInt(smss.getColumnIndexOrThrow("_id"));
+                    bean.setId(id);
                     RealmList<MessageItemBean> list = new RealmList<>();
-                    list.addAll(SmsReader.getInstance().getMessagesUnRedById(
-                            contentResolver, smss.getInt(smss.getColumnIndexOrThrow("_id"))));
+                    list.addAll(SmsReader.getInstance().getMessagesUnRedById(contentResolver, id));
                         bean.setLastMessagesItemBean(list);
                     //}
                     bean.setThreadId(smss.getString(smss.getColumnIndex("thread_id")));

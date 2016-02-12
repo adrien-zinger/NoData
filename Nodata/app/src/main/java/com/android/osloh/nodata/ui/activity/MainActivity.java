@@ -49,20 +49,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDrawerMenu() {
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(R.string.drawer_item_home);
-        SecondaryDrawerItem item2 = new SecondaryDrawerItem().withName(R.string.drawer_item_settings);
+        SecondaryDrawerItem item2 = new SecondaryDrawerItem()
+                .withName(R.string.gallery);
         new DrawerBuilder()
                 .withActivity(this)
                 .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggle(false)
                 .addDrawerItems(
                         item1,
-                        new DividerDrawerItem(),
-                        item2,
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings)
+                        item2
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        if (position == 0) {
+                            replaceFragment(FragmentConstants.Goto.HOME_GALLERY, new Bundle());
+                        } else if (position == 1) {
+                            addFragment(FragmentConstants.Goto.FULL_GALLERY, new Bundle());
+                        }
                         return true;
                     }
                 })
